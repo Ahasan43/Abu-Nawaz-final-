@@ -1,101 +1,112 @@
-<!-- ========== PART 1: HTML + CSS (TOP) ========== -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Electronics & Vacuum Repair POS</title>
+  <title>Abu Nawa Electronics – Repair POS</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     * { box-sizing: border-box; font-family: system-ui, sans-serif; }
-    body { margin: 0; background:#f4f6fb; color:#222; }
-    header { background:#1f4f8f; color:#fff; padding:10px 15px; display:flex; justify-content:space-between; align-items:center; }
+    body { margin: 0; background:#f3f5fb; color:#222; transition: 0.2s; }
+    body.dark { background:#0f172a; color:#e5e7eb; }
+
+    header {
+      background:linear-gradient(135deg,#0f4c75,#1b262c);
+      color:#fff; padding:12px 15px;
+      display:flex; justify-content:space-between; align-items:center;
+      box-shadow:0 2px 6px rgba(0,0,0,0.25);
+    }
     header h1 { font-size:18px; margin:0; }
-    header small { font-size:11px; opacity:0.8; }
-    .container { padding:10px; max-width:1000px; margin:0 auto; }
-    .tabs { display:flex; gap:5px; margin-bottom:10px; flex-wrap:wrap; }
-    .tab-btn { flex:1; padding:8px; border:none; background:#e0e4f0; font-size:13px; border-radius:4px; cursor:pointer; }
-    .tab-btn.active { background:#1f4f8f; color:#fff; }
-    .card { background:#fff; border-radius:6px; padding:10px; margin-bottom:10px; box-shadow:0 1px 3px rgba(0,0,0,0.08); }
-    .card h2 { font-size:15px; margin:0 0 8px; }
+    header small { font-size:11px; opacity:0.85; }
+
+    .container { padding:10px; max-width:1000px; margin:auto; }
+
+    .tabs { display:flex; gap:6px; margin-bottom:10px; flex-wrap:wrap; }
+    .tab-btn {
+      flex:1; padding:8px; border:none; border-radius:999px;
+      background:#e5e7eb; cursor:pointer; font-size:13px;
+      display:flex; align-items:center; justify-content:center; gap:4px;
+    }
+    .tab-btn.active { background:#0f4c75; color:#fff; }
+
+    .card {
+      background:#fff; border-radius:10px; padding:12px; margin-bottom:10px;
+      box-shadow:0 1px 4px rgba(0,0,0,0.12);
+    }
+    body.dark .card { background:#111827; }
+
     .row { display:flex; gap:8px; flex-wrap:wrap; }
     .col-4 { flex:1 1 30%; }
     .col-6 { flex:1 1 48%; }
     .col-12 { flex:1 1 100%; }
-    label { font-size:12px; display:block; margin-bottom:3px; }
-    input, select, textarea { width:100%; padding:6px 8px; font-size:13px; border-radius:4px; border:1px solid #ccd1e0; }
-    textarea { resize:vertical; min-height:60px; }
-    button.primary { background:#1f4f8f; color:#fff; border:none; padding:8px 12px; border-radius:4px; font-size:13px; cursor:pointer; }
-    button.secondary { background:#e0e4f0; color:#222; border:none; padding:6px 10px; border-radius:4px; font-size:12px; cursor:pointer; }
-    button.danger { background:#c0392b; color:#fff; border:none; padding:6px 10px; border-radius:4px; font-size:12px; cursor:pointer; }
+
+    label { font-size:12px; margin-bottom:3px; display:block; }
+    input, select, textarea {
+      width:100%; padding:6px 8px; border-radius:6px;
+      border:1px solid #cbd5f5; background:#f9fafb;
+    }
+
+    button.primary {
+      background:#0f4c75; color:#fff; border:none;
+      padding:8px 12px; border-radius:999px; cursor:pointer;
+    }
+    button.secondary {
+      background:#e5e7eb; border:none; padding:6px 10px;
+      border-radius:999px; cursor:pointer;
+    }
+    button.danger {
+      background:#b91c1c; color:#fff; border:none;
+      padding:6px 10px; border-radius:999px; cursor:pointer;
+    }
+
     .stat-grid { display:flex; gap:8px; flex-wrap:wrap; }
-    .stat { flex:1 1 48%; background:#1f4f8f; color:#fff; border-radius:6px; padding:8px; font-size:12px; }
-    .stat span { display:block; font-size:11px; opacity:0.8; }
-    .stat strong { font-size:16px; }
+    .stat {
+      flex:1 1 48%; background:linear-gradient(135deg,#0f4c75,#3282b8);
+      color:#fff; padding:10px; border-radius:10px;
+    }
+    .stat strong { font-size:18px; display:block; }
+
     table { width:100%; border-collapse:collapse; font-size:12px; }
-    th, td { padding:6px 4px; border-bottom:1px solid #eee; text-align:left; }
-    th { background:#f0f2f8; font-weight:600; }
-    .badge { padding:2px 6px; border-radius:10px; font-size:10px; }
-    .status-Received { background:#f1c40f; color:#000; }
-    .status-Diagnosing { background:#9b59b6; color:#fff; }
-    .status-InRepair { background:#e67e22; color:#fff; }
-    .status-Ready { background:#27ae60; color:#fff; }
-    .status-Delivered { background:#3498db; color:#fff; }
-    .top-actions { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:6px; }
-    .top-actions button { flex:1 1 auto; }
-    .small { font-size:11px; opacity:0.8; }
-    .right { text-align:right; }
-    .hidden { display:none; }
-    .login-overlay {
-      position:fixed; inset:0; background:rgba(0,0,0,0.6);
-      display:flex; align-items:center; justify-content:center; z-index:999;
-    }
-    .login-box {
-      background:#fff; padding:15px; border-radius:6px; width:90%; max-width:320px;
-      box-shadow:0 2px 8px rgba(0,0,0,0.25);
-    }
-    .login-box h2 { margin-top:0; font-size:16px; }
-    .status-tabs { display:flex; gap:4px; flex-wrap:wrap; margin-top:4px; }
+    th, td { padding:6px 4px; border-bottom:1px solid #e5e7eb; }
+    th { background:#f3f4f6; }
+
+    .badge { padding:2px 6px; border-radius:999px; font-size:10px; }
+    .status-Received { background:#facc15; }
+    .status-Diagnosing { background:#a855f7; color:#fff; }
+    .status-InRepair { background:#f97316; color:#fff; }
+    .status-Ready { background:#22c55e; color:#fff; }
+    .status-Delivered { background:#38bdf8; }
+
+    .status-tabs { display:flex; gap:4px; flex-wrap:wrap; }
     .status-tab-btn {
-      flex:1 1 auto; padding:4px 6px; font-size:10px; border-radius:999px;
-      border:none; cursor:pointer; background:#e0e4f0;
+      padding:4px 6px; border:none; border-radius:999px;
+      background:#e5e7eb; font-size:10px; cursor:pointer;
     }
-    .status-tab-btn.active { background:#1f4f8f; color:#fff; }
+    .status-tab-btn.active { background:#0f4c75; color:#fff; }
+
+    .hidden { display:none; }
   </style>
 </head>
+
 <body>
 
 <header>
   <div>
-    <h1>Electronics & Vacuum Repair POS</h1>
-    <small>Local Browser Version (GitHub Pages Ready)</small>
+    <h1>Abu Nawa Electronics</h1>
+    <small>Electronics & Vacuum Repair Management</small>
   </div>
   <div>
-    <small id="todayDate"></small><br />
-    <small id="loginUserLabel">Admin</small>
+    <small id="todayDate"></small>
   </div>
 </header>
-
-<div id="loginOverlay" class="login-overlay">
-  <div class="login-box">
-    <h2>Login / Setup PIN</h2>
-    <p class="small" id="loginInfoText"></p>
-    <label for="pinInput">PIN</label>
-    <input type="password" id="pinInput" maxlength="6" />
-    <div style="margin-top:10px; display:flex; gap:8px;">
-      <button class="primary" onclick="handleLogin()">Enter</button>
-      <button class="secondary" onclick="resetPin()">Reset PIN</button>
-    </div>
-  </div>
-</div>
 
 <div class="container">
 
   <div class="tabs">
-    <button class="tab-btn active" data-tab="dashboard" onclick="switchTab('dashboard', this)">Dashboard</button>
-    <button class="tab-btn" data-tab="newJob" onclick="switchTab('newJob', this)">New Job</button>
-    <button class="tab-btn" data-tab="jobs" onclick="switchTab('jobs', this)">Jobs</button>
-    <button class="tab-btn" data-tab="expenses" onclick="switchTab('expenses', this)">Expenses</button>
-    <button class="tab-btn" data-tab="settings" onclick="switchTab('settings', this)">Settings</button>
+    <button class="tab-btn active" onclick="switchTab('dashboard', this)">📊 Dashboard</button>
+    <button class="tab-btn" onclick="switchTab('newJob', this)">➕ New Job</button>
+    <button class="tab-btn" onclick="switchTab('jobs', this)">🛠️ Jobs</button>
+    <button class="tab-btn" onclick="switchTab('expenses', this)">💸 Expenses</button>
+    <button class="tab-btn" onclick="switchTab('settings', this)">⚙️ Settings</button>
   </div>
 
   <!-- DASHBOARD -->
@@ -105,29 +116,18 @@
       <div class="stat">
         <span>Daily Sales</span>
         <strong id="dailySales">AED 0</strong>
-        <span id="dailyInvoices">0 invoices</span>
       </div>
       <div class="stat">
         <span>Monthly Sales</span>
         <strong id="monthlySales">AED 0</strong>
-        <span id="monthlyInvoices">0 invoices</span>
       </div>
       <div class="stat">
         <span>Pending Jobs</span>
         <strong id="pendingJobs">0</strong>
-        <span>Received + Diagnosing + In Repair</span>
       </div>
       <div class="stat">
         <span>Ready to Deliver</span>
         <strong id="readyJobs">0</strong>
-        <span>Ready status</span>
-      </div>
-    </div>
-    <div style="margin-top:10px;" class="row">
-      <div class="col-12">
-        <button class="secondary" onclick="alert('Daily counters date se auto calculate hote hain. Manual reset ki zaroorat nahi.')">
-          Info: Daily counters auto
-        </button>
       </div>
     </div>
   </section>
@@ -135,17 +135,19 @@
   <!-- NEW JOB -->
   <section id="newJob" class="card hidden">
     <h2>New Repair Job</h2>
+
     <div class="row">
       <div class="col-6">
         <label>Customer Name</label>
         <input id="custName" />
       </div>
       <div class="col-6">
-        <label>Mobile Number</label>
+        <label>Mobile Number (971…)</label>
         <input id="custPhone" />
       </div>
+
       <div class="col-12">
-        <label>Address (optional)</label>
+        <label>Address</label>
         <input id="custAddress" />
       </div>
 
@@ -153,13 +155,12 @@
         <label>Category</label>
         <select id="itemCategory">
           <option value="">Select</option>
-          <option value="TV / Display">TV / Display</option>
-          <option value="Audio / Video">Audio / Video</option>
-          <option value="CCTV & Security">CCTV & Security</option>
-          <option value="Networking">Networking</option>
-          <option value="Vacuum Cleaner">Vacuum Cleaner</option>
-          <option value="Spare / Board">Spare / Board</option>
-          <option value="Other">Other</option>
+          <option>TV / Display</option>
+          <option>Audio / Video</option>
+          <option>CCTV</option>
+          <option>Networking</option>
+          <option>Vacuum Cleaner</option>
+          <option>Spare / Board</option>
         </select>
       </div>
 
@@ -167,68 +168,13 @@
         <label>Item Type</label>
         <select id="itemType">
           <option value="">Select</option>
-          <!-- TV / Display -->
-          <optgroup label="TV / Display">
-            <option>LCD TV</option>
-            <option>LED TV</option>
-            <option>Smart TV</option>
-            <option>Android TV</option>
-            <option>OLED TV</option>
-            <option>QLED TV</option>
-            <option>Curved TV</option>
-            <option>Plasma TV</option>
-            <option>PC Monitor</option>
-            <option>Gaming Monitor</option>
-          </optgroup>
-          <!-- Audio / Video -->
-          <optgroup label="Audio / Video">
-            <option>Home Theater</option>
-            <option>Sound Bar</option>
-            <option>Speaker System</option>
-            <option>Woofer</option>
-            <option>Amplifier</option>
-            <option>DVD Player</option>
-            <option>Blu-ray Player</option>
-            <option>Receiver</option>
-            <option>Satellite Box</option>
-          </optgroup>
-          <!-- CCTV -->
-          <optgroup label="CCTV & Security">
-            <option>CCTV Camera</option>
-            <option>IP Camera</option>
-            <option>DVR</option>
-            <option>NVR</option>
-            <option>Video Door Phone</option>
-          </optgroup>
-          <!-- Networking -->
-          <optgroup label="Networking">
-            <option>WiFi Router</option>
-            <option>Access Point</option>
-            <option>Range Extender</option>
-            <option>Network Switch</option>
-          </optgroup>
-          <!-- Vacuum -->
-          <optgroup label="Vacuum Cleaners">
-            <option>Vacuum Cleaner</option>
-            <option>Wet & Dry Vacuum</option>
-            <option>Handheld Vacuum</option>
-            <option>Robot Vacuum</option>
-            <option>Stick Vacuum</option>
-            <option>Car Vacuum Cleaner</option>
-          </optgroup>
-          <!-- Spare / Board -->
-          <optgroup label="Spare / Board">
-            <option>LED Backlight Strips</option>
-            <option>Power Supply Board</option>
-            <option>Motherboard</option>
-            <option>T-Con Board</option>
-            <option>Inverter Board</option>
-            <option>TV Speakers</option>
-            <option>Remote Control</option>
-            <option>WiFi Module</option>
-            <option>Adapter / Charger</option>
-            <option>IR / Button Board</option>
-          </optgroup>
+          <option>LCD TV</option>
+          <option>LED TV</option>
+          <option>Smart TV</option>
+          <option>Vacuum Cleaner</option>
+          <option>Robot Vacuum</option>
+          <option>Amplifier</option>
+          <option>Home Theater</option>
         </select>
       </div>
 
@@ -236,12 +182,14 @@
         <label>Brand / Model</label>
         <input id="itemModel" />
       </div>
+
       <div class="col-12">
         <label>Issue Detail</label>
         <textarea id="issueDetail"></textarea>
       </div>
+
       <div class="col-4">
-        <label>Estimated Charges (AED)</label>
+        <label>Estimate (AED)</label>
         <input type="number" id="estimate" />
       </div>
       <div class="col-4">
@@ -250,17 +198,18 @@
       </div>
       <div class="col-4">
         <label>Warranty (days)</label>
-        <input type="number" id="warrantyDays" placeholder="e.g. 15" />
+        <input type="number" id="warrantyDays" />
       </div>
+
       <div class="col-12">
         <button class="primary" onclick="saveJob()">Save Job</button>
       </div>
     </div>
   </section>
-
   <!-- JOBS -->
   <section id="jobs" class="card hidden">
     <h2>Jobs</h2>
+
     <div class="top-actions">
       <button class="secondary" onclick="filterJobs('all')">All</button>
       <button class="secondary" onclick="filterJobs('Received')">Received</button>
@@ -269,8 +218,8 @@
       <button class="secondary" onclick="filterJobs('Ready')">Ready</button>
       <button class="secondary" onclick="filterJobs('Delivered')">Delivered</button>
     </div>
-    <div class="small">Status buttons tab type hain — directly status select karo. WhatsApp buttons se invoice / admin message bhejo.</div>
-    <div style="overflow-x:auto; margin-top:6px;">
+
+    <div style="overflow-x:auto;">
       <table>
         <thead>
           <tr>
@@ -291,6 +240,7 @@
   <!-- EXPENSES -->
   <section id="expenses" class="card hidden">
     <h2>Expenses</h2>
+
     <div class="row">
       <div class="col-6">
         <label>Category</label>
@@ -298,33 +248,35 @@
           <option>Rent</option>
           <option>Staff Salary</option>
           <option>Electricity</option>
-          <option>Parts / Material</option>
+          <option>Parts</option>
           <option>Internet</option>
           <option>Other</option>
         </select>
       </div>
+
       <div class="col-6">
         <label>Amount (AED)</label>
         <input type="number" id="expAmount" />
       </div>
+
       <div class="col-12">
-        <label>Note (optional)</label>
+        <label>Note</label>
         <input id="expNote" />
       </div>
+
       <div class="col-12">
         <button class="primary" onclick="addExpense()">Add Expense</button>
       </div>
     </div>
+
     <hr />
+
     <div class="row">
-      <div class="col-6">
-        <strong>Today Expenses:</strong> <span id="todayExp">AED 0</span>
-      </div>
-      <div class="col-6 right">
-        <strong>This Month:</strong> <span id="monthExp">AED 0</span>
-      </div>
+      <div class="col-6"><strong>Today:</strong> <span id="todayExp">AED 0</span></div>
+      <div class="col-6 right"><strong>Month:</strong> <span id="monthExp">AED 0</span></div>
     </div>
-    <div style="overflow-x:auto; margin-top:6px;">
+
+    <div style="overflow-x:auto;">
       <table>
         <thead>
           <tr>
@@ -341,424 +293,298 @@
 
   <!-- SETTINGS -->
   <section id="settings" class="card hidden">
-    <h2>Settings & Data</h2>
-    <div class="row">
-      <div class="col-12">
-        <label>Admin WhatsApp Number (without +)</label>
-        <input id="adminWhatsApp" placeholder="e.g. 971501912040" />
-      </div>
-      <div class="col-12">
-        <button class="primary" onclick="saveSettings()">Save Settings</button>
-      </div>
-    </div>
+    <h2>Settings</h2>
+
+    <label>Admin WhatsApp Number (971…)</label>
+    <input id="adminWhatsApp" />
+
+    <button class="primary" onclick="saveSettings()">Save</button>
+
     <hr />
-    <h3 style="font-size:14px;">Data Export / Import</h3>
-    <div class="row">
-      <div class="col-6">
-        <button class="secondary" onclick="exportData()">Export JSON</button>
-      </div>
-      <div class="col-6">
-        <input type="file" id="importFile" accept=".json" onchange="importData(event)" />
-      </div>
-      <div class="col-12" style="margin-top:8px;">
-        <button class="danger" onclick="wipeAllData()">Delete All Data</button>
-      </div>
-    </div>
-    <p class="small" style="margin-top:8px;">
-      Export file ko safe jagah rakh lo. Import se purana data overwrite ho sakta hai.
-    </p>
+
+    <button class="secondary" onclick="toggleDarkMode()">Toggle Dark Mode</button>
+
+    <hr />
+
+    <button class="secondary" onclick="exportData()">Export Data</button>
+    <input type="file" id="importFile" onchange="importData(event)" />
+
+    <button class="danger" onclick="wipeAllData()">Delete All Data</button>
   </section>
 
 </div>
+  <script>
+/* ---------------- STORAGE HELPERS ---------------- */
+const LS_JOBS = "jobs_v1";
+const LS_EXP = "exp_v1";
+const LS_SETTINGS = "settings_v1";
 
-<!-- ========== PART 2: JS (STORAGE, LOGIN, TABS, JOBS) ========== -->
-<script>
-  const LS_JOBS = 'erp_jobs_v2';
-  const LS_EXP = 'erp_expenses_v2';
-  const LS_SETTINGS = 'erp_settings_v2';
-  const LS_PIN = 'erp_pin_v2';
+function load(key, def) {
+  try { return JSON.parse(localStorage.getItem(key)) || def; }
+  catch { return def; }
+}
+function save(key, val) {
+  localStorage.setItem(key, JSON.stringify(val));
+}
 
-  const todayStr = () => new Date().toISOString().slice(0,10);
-  const monthStr = () => new Date().toISOString().slice(0,7);
+/* ---------------- TAB SWITCH ---------------- */
+function switchTab(id, btn) {
+  document.querySelectorAll("section").forEach(s => s.classList.add("hidden"));
+  document.getElementById(id).classList.remove("hidden");
 
-  function loadJSON(key, def) {
-    try {
-      const v = localStorage.getItem(key);
-      return v ? JSON.parse(v) : def;
-    } catch(e) { return def; }
-  }
-  function saveJSON(key, val) {
-    localStorage.setItem(key, JSON.stringify(val));
-  }
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
 
-  function initLogin() {
-    const pin = localStorage.getItem(LS_PIN);
-    const info = document.getElementById('loginInfoText');
-    if (!pin) {
-      info.textContent = 'Pehli dafa use kar rahe ho. Apna naya PIN set karo (yaad rakhna).';
-    } else {
-      info.textContent = 'Apna PIN enter karo.';
-    }
-    document.getElementById('loginOverlay').style.display = 'flex';
-  }
+  if (id === "jobs") renderJobs();
+  if (id === "expenses") renderExpenses();
+  if (id === "dashboard") refreshDashboard();
+}
 
-  function handleLogin() {
-    const pinInput = document.getElementById('pinInput').value.trim();
-    if (!pinInput) return alert('PIN likho.');
-    const stored = localStorage.getItem(LS_PIN);
-    if (!stored) {
-      localStorage.setItem(LS_PIN, pinInput);
-      document.getElementById('loginOverlay').style.display = 'none';
-    } else {
-      if (stored === pinInput) {
-        document.getElementById('loginOverlay').style.display = 'none';
-      } else {
-        alert('Galat PIN.');
-      }
-    }
-  }
+/* ---------------- SAVE JOB ---------------- */
+function saveJob() {
+  let jobs = load(LS_JOBS, []);
 
-  function resetPin() {
-    if (confirm('PIN reset karna hai? Purana PIN remove ho jayega.')) {
-      localStorage.removeItem(LS_PIN);
-      initLogin();
-    }
+  const job = {
+    id: jobs.length ? jobs[jobs.length - 1].id + 1 : 1,
+    name: custName.value.trim(),
+    phone: custPhone.value.replace(/\D/g, ""),
+    addr: custAddress.value.trim(),
+    category: itemCategory.value,
+    type: itemType.value,
+    model: itemModel.value.trim(),
+    issue: issueDetail.value.trim(),
+    amount: Number(estimate.value || 0),
+    advance: Number(advance.value || 0),
+    warranty: Number(warrantyDays.value || 0),
+    status: "Received",
+    created: new Date().toISOString()
+  };
+
+  if (!job.name || !job.phone || !job.type) {
+    alert("Name, Phone, Item Type required");
+    return;
   }
 
-  function switchTab(id, btn) {
-    document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
-    document.getElementById(id).classList.remove('hidden');
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    if (id === 'dashboard') refreshDashboard();
-    if (id === 'jobs') renderJobs();
-    if (id === 'expenses') renderExpenses();
-    if (id === 'settings') loadSettingsToUI();
-  }
+  jobs.push(job);
+  save(LS_JOBS, jobs);
 
-  function getJobs() { return loadJSON(LS_JOBS, []); }
-  function setJobs(j) { saveJSON(LS_JOBS, j); }
+  alert("Job Saved Successfully");
+}
 
-  function saveJob() {
-    const name = document.getElementById('custName').value.trim();
-    const phone = document.getElementById('custPhone').value.trim();
-    const addr = document.getElementById('custAddress').value.trim();
-    const cat = document.getElementById('itemCategory').value;
-    const type = document.getElementById('itemType').value;
-    const model = document.getElementById('itemModel').value.trim();
-    const issue = document.getElementById('issueDetail').value.trim();
-    const est = parseFloat(document.getElementById('estimate').value || '0');
-    const adv = parseFloat(document.getElementById('advance').value || '0');
-    const warrantyDays = parseInt(document.getElementById('warrantyDays').value || '0', 10);
+/* ---------------- RENDER JOBS ---------------- */
+function renderJobs() {
+  let jobs = load(LS_JOBS, []);
+  let tbody = document.getElementById("jobsTableBody");
+  tbody.innerHTML = "";
 
-    if (!name || !phone || !type) {
-      return alert('Name, Phone, Item Type zaroori hain.');
-    }
+  jobs.slice().reverse().forEach(j => {
+    let tr = document.createElement("tr");
 
-    const jobs = getJobs();
-    const id = jobs.length ? jobs[jobs.length-1].id + 1 : 1;
-    const now = new Date().toISOString();
-    const warrantyTill = warrantyDays > 0 ? new Date(Date.now() + warrantyDays*24*60*60*1000).toISOString() : null;
+    tr.innerHTML = `
+      <td>${j.id}</td>
+      <td>${j.name}<br><small>${j.phone}</small></td>
+      <td>${j.type} (${j.model})</td>
+      <td>AED ${j.amount}</td>
+      <td><span class="badge status-${j.status.replace(" ", "")}">${j.status}</span></td>
 
-    const job = {
-      id,
-      name,
-      phone,
-      addr,
-      category: cat,
-      type,
-      model,
-      issue,
-      estimate: est,
-      advance: adv,
-      amount: est,
-      status: 'Received',
-      createdAt: now,
-      diagnosingAt: null,
-      inRepairAt: null,
-      readyAt: null,
-      deliveredAt: null,
-      warrantyDays,
-      warrantyTill
-    };
-    jobs.push(job);
-    setJobs(jobs);
-    alert('Job saved. ID: ' + id);
-    clearNewJobForm();
-  }
+      <td>
+        <div class="status-tabs">
+          ${["Received","Diagnosing","In Repair","Ready","Delivered"]
+            .map(s => `
+              <button class="status-tab-btn ${j.status === s ? "active" : ""}"
+                onclick="setStatus(${j.id}, '${s}')">${s}</button>
+            `).join("")}
+        </div>
+      </td>
 
-  function clearNewJobForm() {
-    ['custName','custPhone','custAddress','itemModel','issueDetail','estimate','advance','warrantyDays'].forEach(id => {
-      document.getElementById(id).value = '';
-    });
-    document.getElementById('itemCategory').value = '';
-    document.getElementById('itemType').value = '';
-  }
+      <td>
+        <button class="secondary" onclick="sendCustWA(${j.id})">Cust WA</button>
+        <button class="secondary" onclick="sendAdminWA(${j.id})">Admin WA</button>
+        <button class="secondary" onclick="printInvoice(${j.id})">Print</button>
+        <button class="danger" onclick="deleteJob(${j.id})">X</button>
+      </td>
+    `;
 
-  let currentFilter = 'all';
-
-  function filterJobs(status) {
-    currentFilter = status;
-    renderJobs();
-  }
-
-  function renderJobs() {
-    const jobs = getJobs();
-    const tbody = document.getElementById('jobsTableBody');
-    tbody.innerHTML = '';
-    const filtered = jobs.filter(j => currentFilter === 'all' ? true : j.status === currentFilter);
-    filtered.slice().reverse().forEach(j => {
-      const tr = document.createElement('tr');
-      const statusClass = 'status-' + j.status.replace(' ', '');
-      const warrantyText = j.warrantyDays ? `W: ${j.warrantyDays}d` : '';
-      tr.innerHTML = `
-        <td>${j.id}</td>
-        <td>${j.name}<br><span class="small">${j.phone}</span></td>
-        <td>${j.category || ''}<br><span class="small">${j.type} ${j.model ? '('+j.model+')' : ''}</span></td>
-        <td>AED ${j.amount.toFixed(0)}<br><span class="small">${warrantyText}</span></td>
-        <td><span class="badge ${statusClass}">${j.status}</span></td>
-        <td>
-          <div class="status-tabs">
-            ${['Received','Diagnosing','In Repair','Ready','Delivered'].map(s => `
-              <button class="status-tab-btn ${j.status===s?'active':''}" onclick="setStatus(${j.id}, '${s}')">${s}</button>
-            `).join('')}
-          </div>
-        </td>
-        <td>
-          <button class="secondary" onclick="sendInvoiceWhatsApp(${j.id})">Cust WA</button>
-          <button class="secondary" onclick="sendAdminWhatsApp(${j.id})">Admin WA</button>
-          <button class="danger" onclick="deleteJob(${j.id})">X</button>
-        </td>
-      `;
-      tbody.appendChild(tr);
-    });
-    refreshDashboard();
-  }
-
-  function setStatus(id, status) {
-    const jobs = getJobs();
-    const idx = jobs.findIndex(j => j.id === id);
-    if (idx === -1) return;
-    const now = new Date().toISOString();
-    jobs[idx].status = status;
-    if (status === 'Diagnosing') jobs[idx].diagnosingAt = now;
-    if (status === 'In Repair') jobs[idx].inRepairAt = now;
-    if (status === 'Ready') jobs[idx].readyAt = now;
-    if (status === 'Delivered') jobs[idx].deliveredAt = now;
-    setJobs(jobs);
-    renderJobs();
-  }
-
-  function deleteJob(id) {
-    if (!confirm('Is job ko delete karna hai?')) return;
-    let jobs = getJobs();
-    jobs = jobs.filter(j => j.id !== id);
-    setJobs(jobs);
-    renderJobs();
-  }
-
-  function refreshDashboard() {
-    const jobs = getJobs();
-    const today = todayStr();
-    const month = monthStr();
-
-    let dailySales = 0, dailyInv = 0;
-    let monthlySales = 0, monthlyInv = 0;
-    let pending = 0, ready = 0;
-
-    jobs.forEach(j => {
-      if (['Received','Diagnosing','In Repair'].includes(j.status)) pending++;
-      if (j.status === 'Ready') ready++;
-      if (j.status === 'Delivered' && j.deliveredAt) {
-        const d = j.deliveredAt.slice(0,10);
-        const m = j.deliveredAt.slice(0,7);
-        if (d === today) {
-          dailySales += j.amount;
-          dailyInv++;
-        }
-        if (m === month) {
-          monthlySales += j.amount;
-          monthlyInv++;
-        }
-      }
-    });
-
-    document.getElementById('dailySales').textContent = 'AED ' + dailySales.toFixed(0);
-    document.getElementById('dailyInvoices').textContent = dailyInv + ' invoices';
-    document.getElementById('monthlySales').textContent = 'AED ' + monthlySales.toFixed(0);
-    document.getElementById('monthlyInvoices').textContent = monthlyInv + ' invoices';
-    document.getElementById('pendingJobs').textContent = pending;
-    document.getElementById('readyJobs').textContent = ready;
-
-    renderExpensesSummary();
-  }
-
-  function getExpenses() { return loadJSON(LS_EXP, []); }
-  function setExpenses(e) { saveJSON(LS_EXP, e); }
-
-  function addExpense() {
-    const cat = document.getElementById('expCategory').value;
-    const amt = parseFloat(document.getElementById('expAmount').value || '0');
-    const note = document.getElementById('expNote').value.trim();
-    if (!amt) return alert('Amount likho.');
-    const exp = getExpenses();
-    exp.push({
-      id: exp.length ? exp[exp.length-1].id + 1 : 1,
-      cat,
-      amt,
-      note,
-      date: new Date().toISOString()
-    });
-    setExpenses(exp);
-    document.getElementById('expAmount').value = '';
-    document.getElementById('expNote').value = '';
-    renderExpenses();
-  }
-
-  function renderExpenses() {
-    const exp = getExpenses();
-    const tbody = document.getElementById('expTableBody');
-    tbody.innerHTML = '';
-    exp.slice().reverse().forEach(e => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${e.date.slice(0,10)}</td>
-        <td>${e.cat}</td>
-        <td>AED ${e.amt.toFixed(0)}</td>
-        <td>${e.note || ''}</td>
-      `;
-      tbody.appendChild(tr);
-    });
-    renderExpensesSummary();
-  }
-
-  function renderExpensesSummary() {
-    const exp = getExpenses();
-    const today = todayStr();
-    const month = monthStr();
-    let t = 0, m = 0;
-    exp.forEach(e => {
-      const d = e.date.slice(0,10);
-      const mm = e.date.slice(0,7);
-      if (d === today) t += e.amt;
-      if (mm === month) m += e.amt;
-    });
-    document.getElementById('todayExp').textContent = 'AED ' + t.toFixed(0);
-    document.getElementById('monthExp').textContent = 'AED ' + m.toFixed(0);
-  }
-
-  function getSettings() { return loadJSON(LS_SETTINGS, { adminWhatsApp: '971501912040' }); }
-  function setSettings(s) { saveJSON(LS_SETTINGS, s); }
-
-  function loadSettingsToUI() {
-    const s = getSettings();
-    document.getElementById('adminWhatsApp').value = s.adminWhatsApp || '';
-  }
-
-  function saveSettings() {
-    const num = document.getElementById('adminWhatsApp').value.trim();
-    if (!num) return alert('Admin WhatsApp number likho.');
-    setSettings({ adminWhatsApp: num });
-    alert('Settings saved.');
-  }
-
-  function exportData() {
-    const data = {
-      jobs: getJobs(),
-      expenses: getExpenses(),
-      settings: getSettings()
-    };
-    const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'electronics_vacuum_repair_data.json';
-    a.click();
-    URL.revokeObjectURL(url);
-  }
-
-  function importData(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = function(ev) {
-      try {
-        const data = JSON.parse(ev.target.result);
-        if (data.jobs) saveJSON(LS_JOBS, data.jobs);
-        if (data.expenses) saveJSON(LS_EXP, data.expenses);
-        if (data.settings) saveJSON(LS_SETTINGS, data.settings);
-        alert('Data imported.');
-        renderJobs();
-        renderExpenses();
-      } catch(err) {
-        alert('Invalid JSON file.');
-      }
-    };
-    reader.readAsText(file);
-  }
-
-  function wipeAllData() {
-    if (!confirm('Saara data delete ho jayega. Sure?')) return;
-    localStorage.removeItem(LS_JOBS);
-    localStorage.removeItem(LS_EXP);
-    renderJobs();
-    renderExpenses();
-    refreshDashboard();
-  }
-
-  function sendInvoiceWhatsApp(id) {
-    const jobs = getJobs();
-    const j = jobs.find(x => x.id === id);
-    if (!j) return;
-    if (!j.phone) return alert('Customer phone missing.');
-    const warrantyLine = j.warrantyDays ? `Warranty: ${j.warrantyDays} days\n` : '';
-    const text =
-`Electronics & Vacuum Repair Invoice
-Job ID: ${j.id}
-Customer: ${j.name}
-Phone: ${j.phone}
-
-Category: ${j.category || ''}
-Item: ${j.type} ${j.model ? '('+j.model+')' : ''}
-Issue: ${j.issue || ''}
-
-Status: ${j.status}
-Amount: AED ${j.amount.toFixed(0)}
-Advance: AED ${j.advance.toFixed(0)}
-Balance: AED ${(j.amount - j.advance).toFixed(0)}
-${warrantyLine}
-Shukriya!`;
-    const url = 'https://wa.me/' + encodeURIComponent(j.phone) + '?text=' + encodeURIComponent(text);
-    window.open(url, '_blank');
-  }
-
-  function sendAdminWhatsApp(id) {
-    const jobs = getJobs();
-    const j = jobs.find(x => x.id === id);
-    if (!j) return;
-    const s = getSettings();
-    if (!s.adminWhatsApp) return alert('Admin WhatsApp number settings mein set karo.');
-    const text =
-`Repair Job Update
-Job ID: ${j.id}
-Customer: ${j.name} (${j.phone})
-Category: ${j.category || ''}
-Item: ${j.type} ${j.model ? '('+j.model+')' : ''}
-Issue: ${j.issue || ''}
-
-Status: ${j.status}
-Amount: AED ${j.amount.toFixed(0)}
-Advance: AED ${j.advance.toFixed(0)}`;
-    const url = 'https://wa.me/' + encodeURIComponent(s.adminWhatsApp) + '?text=' + encodeURIComponent(text);
-    window.open(url, '_blank');
-  }
-
-  document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('todayDate').textContent = todayStr();
-    initLogin();
-    refreshDashboard();
+    tbody.appendChild(tr);
   });
+}
+
+/* ---------------- STATUS UPDATE ---------------- */
+function setStatus(id, status) {
+  let jobs = load(LS_JOBS, []);
+  let j = jobs.find(x => x.id === id);
+  j.status = status;
+  save(LS_JOBS, jobs);
+  renderJobs();
+}
+
+/* ---------------- DELETE JOB ---------------- */
+function deleteJob(id) {
+  if (!confirm("Delete this job?")) return;
+  let jobs = load(LS_JOBS, []).filter(j => j.id !== id);
+  save(LS_JOBS, jobs);
+  renderJobs();
+}
+
+/* ---------------- WHATSAPP CUSTOMER ---------------- */
+function sendCustWA(id) {
+  let j = load(LS_JOBS, []).find(x => x.id === id);
+  let msg = 
+`Abu Nawa Electronics
+Job ID: ${j.id}
+Amount: AED ${j.amount}
+Advance: AED ${j.advance}
+Balance: AED ${j.amount - j.advance}
+Status: ${j.status}`;
+
+  window.open(`https://wa.me/${j.phone}?text=${encodeURIComponent(msg)}`);
+}
+
+/* ---------------- WHATSAPP ADMIN ---------------- */
+function sendAdminWA(id) {
+  let j = load(LS_JOBS, []).find(x => x.id === id);
+  let admin = load(LS_SETTINGS, { admin: "971501912040" }).admin;
+
+  let msg = 
+`Job Update – Abu Nawa Electronics
+ID: ${j.id}
+Customer: ${j.name}
+Item: ${j.type} (${j.model})
+Status: ${j.status}`;
+
+  window.open(`https://wa.me/${admin}?text=${encodeURIComponent(msg)}`);
+}
+
+/* ---------------- PRINT INVOICE ---------------- */
+function printInvoice(id) {
+  let j = load(LS_JOBS, []).find(x => x.id === id);
+
+  let w = window.open("");
+  w.document.write(`
+    <h1>Abu Nawa Electronics – Invoice</h1>
+    <p><strong>Job ID:</strong> ${j.id}</p>
+    <p><strong>Name:</strong> ${j.name}</p>
+    <p><strong>Phone:</strong> ${j.phone}</p>
+    <p><strong>Item:</strong> ${j.type} (${j.model})</p>
+    <p><strong>Amount:</strong> AED ${j.amount}</p>
+    <p><strong>Advance:</strong> AED ${j.advance}</p>
+    <p><strong>Balance:</strong> AED ${j.amount - j.advance}</p>
+    <script>window.print()<\/script>
+  `);
+}
+
+/* ---------------- EXPENSES ---------------- */
+function addExpense() {
+  let exp = load(LS_EXP, []);
+  exp.push({
+    id: exp.length ? exp[exp.length - 1].id + 1 : 1,
+    cat: expCategory.value,
+    amt: Number(expAmount.value || 0),
+    note: expNote.value,
+    date: new Date().toISOString()
+  });
+  save(LS_EXP, exp);
+  renderExpenses();
+}
+
+function renderExpenses() {
+  let exp = load(LS_EXP, []);
+  let tbody = document.getElementById("expTableBody");
+  tbody.innerHTML = "";
+
+  exp.slice().reverse().forEach(e => {
+    let tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${e.date.slice(0,10)}</td>
+      <td>${e.cat}</td>
+      <td>AED ${e.amt}</td>
+      <td>${e.note}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  refreshDashboard();
+}
+
+/* ---------------- DASHBOARD ---------------- */
+function refreshDashboard() {
+  let jobs = load(LS_JOBS, []);
+  let today = new Date().toISOString().slice(0,10);
+  let month = new Date().toISOString().slice(0,7);
+
+  let daily = 0, monthly = 0, pending = 0, ready = 0;
+
+  jobs.forEach(j => {
+    if (["Received","Diagnosing","In Repair"].includes(j.status)) pending++;
+    if (j.status === "Ready") ready++;
+
+    if (j.status === "Delivered") {
+      if (j.created.slice(0,10) === today) daily += j.amount;
+      if (j.created.slice(0,7) === month) monthly += j.amount;
+    }
+  });
+
+  dailySales.textContent = "AED " + daily;
+  monthlySales.textContent = "AED " + monthly;
+  pendingJobs.textContent = pending;
+  readyJobs.textContent = ready;
+
+  let exp = load(LS_EXP, []);
+  let t = 0, m = 0;
+  exp.forEach(e => {
+    if (e.date.slice(0,10) === today) t += e.amt;
+    if (e.date.slice(0,7) === month) m += e.amt;
+  });
+
+  todayExp.textContent = "AED " + t;
+  monthExp.textContent = "AED " + m;
+}
+
+/* ---------------- SETTINGS ---------------- */
+function saveSettings() {
+  save(LS_SETTINGS, { admin: adminWhatsApp.value.replace(/\D/g,"") });
+  alert("Settings Saved");
+}
+
+function exportData() {
+  const data = {
+    jobs: load(LS_JOBS, []),
+    expenses: load(LS_EXP, []),
+    settings: load(LS_SETTINGS, {})
+  };
+  const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "abu_nawa_backup.json";
+  a.click();
+}
+
+function importData(e) {
+  const file = e.target.files[0];
+  const reader = new FileReader();
+  reader.onload = function() {
+    const data = JSON.parse(reader.result);
+    save(LS_JOBS, data.jobs || []);
+    save(LS_EXP, data.expenses || []);
+    save(LS_SETTINGS, data.settings || {});
+    alert("Data Imported");
+  };
+  reader.readAsText(file);
+}
+
+function wipeAllData() {
+  if (!confirm("Delete ALL data?")) return;
+  localStorage.removeItem(LS_JOBS);
+  localStorage.removeItem(LS_EXP);
+  localStorage.removeItem(LS_SETTINGS);
+  alert("All Data Deleted");
+}
+
+/* ---------------- INIT ---------------- */
+document.getElementById("todayDate").textContent = new Date().toISOString().slice(0,10);
+refreshDashboard();
 </script>
 
 </body>
 </html>
+
