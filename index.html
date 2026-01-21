@@ -4,17 +4,251 @@
   <meta charset="UTF-8" />
   <title>Abu Nawaz Electronic - Repair Manager</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="style.css" />
+  <style>
+    * { box-sizing: border-box; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    body { margin:0; padding:0; background:#f3f4f6; color:#111827; }
+
+    /* Top app bar + quick options */
+    header {
+      background:linear-gradient(135deg,#fb7185,#fbbf24);
+      padding:12px 14px 10px;
+      color:#fff;
+      box-shadow:0 4px 16px rgba(248,113,113,0.5);
+      position:sticky; top:0; z-index:20;
+    }
+    header h1 {
+      margin:0; font-size:20px; letter-spacing:0.03em;
+      display:flex; align-items:center; gap:8px;
+    }
+    header h1 span.logo-dot {
+      width:12px; height:12px; border-radius:999px;
+      background:radial-gradient(circle,#fef3c7,#facc15);
+      box-shadow:0 0 10px rgba(250,204,21,0.9);
+    }
+    header small { font-size:11px; opacity:0.9; display:block; margin-top:3px; }
+
+    .top-options {
+      margin-top:8px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+    }
+    .top-btn {
+      padding:5px 10px;
+      border-radius:999px;
+      border:none;
+      font-size:11px;
+      background:rgba(255,255,255,0.18);
+      color:#fff;
+      display:inline-flex;
+      align-items:center;
+      gap:4px;
+      cursor:pointer;
+      backdrop-filter:blur(6px);
+    }
+    .top-btn span.dot {
+      width:6px; height:6px; border-radius:999px;
+      background:#fef3c7;
+    }
+
+    main { padding:10px; max-width:1100px; margin:0 auto 70px; }
+
+    h2 { margin:0 0 8px; font-size:16px; color:#be123c; display:flex; align-items:center; gap:6px; }
+    h2 span.bar { width:4px; height:16px; border-radius:999px; background:linear-gradient(180deg,#fb7185,#fbbf24); }
+
+    .card {
+      background:#ffffff;
+      border-radius:18px;
+      padding:12px 12px 10px;
+      margin-bottom:12px;
+      border:1px solid #e5e7eb;
+      box-shadow:0 10px 26px rgba(15,23,42,0.08);
+    }
+
+    label { display:block; margin-top:6px; font-size:12px; color:#4b5563; }
+    input, select, textarea {
+      width:100%; padding:8px 11px; margin-top:3px;
+      border-radius:999px; border:1px solid #e5e7eb;
+      background:#f9fafb; color:#111827; font-size:13px;
+      outline:none; transition:0.15s border,0.15s box-shadow,0.15s background,0.15s transform;
+    }
+    textarea {
+      border-radius:14px;
+      min-height:60px;
+      resize:vertical;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color:#fb7185;
+      box-shadow:0 0 0 1px rgba(248,113,113,0.35);
+      background:#fff7fb;
+      transform:translateY(-1px);
+    }
+
+    button {
+      padding:8px 14px;
+      border:none;
+      border-radius:999px;
+      cursor:pointer;
+      font-size:13px;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      transition:0.15s transform,0.15s box-shadow,0.15s background,0.15s opacity;
+      white-space:nowrap;
+    }
+    button:active { transform:scale(0.97); }
+
+    .btn-primary {
+      background:linear-gradient(135deg,#fb7185,#fbbf24);
+      color:#ffffff;
+      box-shadow:0 8px 20px rgba(248,113,113,0.45);
+      font-weight:600;
+    }
+    .btn-primary:hover { box-shadow:0 10px 26px rgba(248,113,113,0.6); }
+
+    .btn-danger {
+      background:linear-gradient(135deg,#ef4444,#b91c1c);
+      color:#fff;
+      box-shadow:0 8px 20px rgba(239,68,68,0.4);
+    }
+    .btn-secondary {
+      background:#ffffff;
+      color:#be123c;
+      border:1px solid #e5e7eb;
+    }
+    .btn-small { font-size:11px; padding:5px 9px; }
+
+    .row { display:flex; flex-wrap:wrap; gap:10px; }
+    .col-4 { flex:1 1 230px; }
+    .col-6 { flex:1 1 340px; }
+    .col-12 { flex:1 1 100%; }
+
+    table { width:100%; border-collapse:collapse; margin-top:8px; font-size:11px; color:#111827; }
+    th, td { border-bottom:1px solid #e5e7eb; padding:5px 4px; text-align:left; }
+    th { background:#f9fafb; position:sticky; top:0; z-index:1; }
+    tr:nth-child(even) td { background:#ffffff; }
+    tr:nth-child(odd) td { background:#fdf2f8; }
+
+    .badge {
+      padding:2px 7px;
+      border-radius:999px;
+      font-size:10px;
+      color:#ffffff;
+      font-weight:600;
+      display:inline-block;
+    }
+    .status-in { background:#f59e0b; }
+    .status-ready { background:#22c55e; }
+    .status-returned { background:#3b82f6; }
+
+    .stats { display:flex; flex-wrap:wrap; gap:8px; margin-top:5px; }
+    .stat-box {
+      background:#ffffff;
+      color:#4b5563;
+      padding:8px 10px;
+      border-radius:16px;
+      font-size:12px;
+      flex:1 1 130px;
+      border:1px solid #e5e7eb;
+      box-shadow:0 8px 20px rgba(15,23,42,0.06);
+    }
+    .stat-box strong { font-size:15px; display:block; margin-top:2px; color:#be123c; }
+
+    .muted { font-size:11px; color:#6b7280; }
+
+    .fab {
+      position:fixed;
+      right:16px;
+      bottom:16px;
+      z-index:20;
+      background:linear-gradient(135deg,#fb7185,#fbbf24);
+      color:#ffffff;
+      width:56px;
+      height:56px;
+      border-radius:999px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:0 12px 30px rgba(248,113,113,0.7);
+      font-size:28px;
+      cursor:pointer;
+    }
+    .fab span { margin-top:-2px; }
+
+    .pill-row {
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+      margin-top:4px;
+      font-size:11px;
+    }
+    .pill {
+      padding:3px 8px;
+      border-radius:999px;
+      border:1px solid #e5e7eb;
+      background:#f9fafb;
+      color:#be123c;
+    }
+
+    #waLinks a {
+      color:#be123c;
+      text-decoration:none;
+      font-size:11px;
+      font-weight:500;
+    }
+    #waLinks a:hover { text-decoration:underline; }
+
+    .saved-indicator {
+      font-size:11px;
+      color:#16a34a;
+      display:inline-flex;
+      align-items:center;
+      gap:4px;
+    }
+    .saved-dot {
+      width:6px;
+      height:6px;
+      border-radius:999px;
+      background:#16a34a;
+      box-shadow:0 0 6px rgba(22,163,74,0.7);
+    }
+
+    .filter-row {
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+      margin-top:6px;
+    }
+    .filter-btn {
+      padding:4px 10px;
+      border-radius:999px;
+      border:1px solid #e5e7eb;
+      background:#ffffff;
+      font-size:11px;
+      cursor:pointer;
+      color:#4b5563;
+    }
+    .filter-btn.active {
+      background:#fb7185;
+      color:#ffffff;
+      border-color:#fb7185;
+    }
+
+    @media (max-width:600px){
+      header h1 { font-size:18px; }
+      main { padding:8px; }
+      table { font-size:10px; }
+      .card { padding:10px 9px 8px; }
+    }
+  </style>
 </head>
 <body>
-
 <header>
   <h1><span class="logo-dot"></span>Abu Nawaz Electronic</h1>
   <small>Repair Manager • WhatsApp Alerts • Dashboard • Multi-items</small>
-
   <div class="top-options">
     <button class="top-btn" onclick="scrollToSection('newEntryCard')"><span class="dot"></span>New entry</button>
-    <button class="top-btn" onclick="openDashboard()"><span class="dot"></span>Dashboard</button>
+    <button class="top-btn" onclick="scrollToSection('dashboardCard')"><span class="dot"></span>Dashboard</button>
     <button class="top-btn" onclick="scrollToSection('searchCard')"><span class="dot"></span>Search</button>
     <button class="top-btn" onclick="scrollToSection('backupCard')"><span class="dot"></span>Backup</button>
     <button class="top-btn" onclick="scrollToSection('entriesCard')"><span class="dot"></span>All items</button>
@@ -34,20 +268,25 @@
         <label>Admin Reset PIN</label>
         <input type="password" id="adminPin" placeholder="Set a PIN (e.g. 1234)" />
       </div>
-      <div class="col-4" style="display:flex; align-items:flex-end; gap:6px;">
-        <button class="btn-primary" onclick="saveAdminSettings()">Save</button>
-        <button class="btn-danger" onclick="resetAllData()">Reset</button>
+      <div class="col-4" style="display:flex; align-items:flex-end; gap:6px; flex-wrap:wrap;">
+        <button class="btn-primary" onclick="saveAdminSettings()">Save settings</button>
+        <button class="btn-danger" onclick="resetAllData()">Reset data</button>
         <span id="adminSaved" class="saved-indicator" style="display:none;">
           <span class="saved-dot"></span>Saved
         </span>
       </div>
     </div>
+    <p class="muted">Data browser ke local storage mein safe rehta hai. Reset se pehle PIN zaroor set karein.</p>
   </section>
 
   <!-- NEW ENTRY -->
   <section class="card" id="newEntryCard">
     <h2><span class="bar"></span>New repair / item entry</h2>
-
+    <div class="pill-row">
+      <div class="pill">Repairing shop flow</div>
+      <div class="pill">Customer + Multiple items</div>
+      <div class="pill">WhatsApp to admin & customer</div>
+    </div>
     <div class="row">
       <div class="col-4">
         <label>Customer name</label>
@@ -89,64 +328,95 @@
 
       <div class="col-6">
         <label>Issue / detail</label>
-        <textarea id="itemIssue"></textarea>
+        <textarea id="itemIssue" placeholder="Issue detail likhein..."></textarea>
       </div>
       <div class="col-6">
         <label>Notes (optional)</label>
-        <textarea id="itemNotes"></textarea>
+        <textarea id="itemNotes" placeholder="Accessories, condition, etc."></textarea>
       </div>
 
-      <div class="col-12" style="margin-top:6px; display:flex; gap:8px;">
+      <div class="col-12" style="margin-top:6px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
         <button class="btn-primary" onclick="addEntry()">Add item</button>
+        <span class="muted">Same customer ke multiple items alag alag add kar sakte hain.</span>
         <span id="entrySaved" class="saved-indicator" style="display:none;">
           <span class="saved-dot"></span>Saved
         </span>
       </div>
     </div>
+    <div id="waLinks" class="muted" style="margin-top:6px;"></div>
   </section>
 
   <!-- SEARCH -->
   <section class="card" id="searchCard">
-    <h2><span class="bar"></span>Search customer</h2>
+    <h2><span class="bar"></span>Search by customer mobile</h2>
     <div class="row">
       <div class="col-4">
         <label>Customer mobile number</label>
-        <input type="text" id="searchPhone" placeholder="Enter number..." />
+        <input type="text" id="searchPhone" placeholder="Enter mobile to search..." />
       </div>
-      <div class="col-4" style="display:flex; align-items:flex-end; gap:6px;">
-        <button class="btn-secondary" onclick="searchCustomer()">Search</button>
+      <div class="col-4" style="display:flex; align-items:flex-end; gap:6px; flex-wrap:wrap;">
+        <button class="btn-secondary" onclick="searchByPhone()">Search</button>
         <button class="btn-secondary" onclick="clearSearch()">Clear</button>
       </div>
     </div>
+    <div id="searchResult" class="muted" style="margin-top:6px;"></div>
   </section>
 
-  <!-- BACKUP -->
+  <!-- DASHBOARD -->
+  <section class="card" id="dashboardCard">
+    <h2><span class="bar"></span>Monthly sales dashboard</h2>
+    <div class="stats">
+      <div class="stat-box">
+        <div>Total entries (this month)</div>
+        <strong id="statTotal">0</strong>
+      </div>
+      <div class="stat-box">
+        <div>Total amount (this month)</div>
+        <strong id="statAmount">0</strong>
+      </div>
+      <div class="stat-box">
+        <div>In repair</div>
+        <strong id="statIn">0</strong>
+      </div>
+      <div class="stat-box">
+        <div>Ready / Out</div>
+        <strong id="statReady">0</strong>
+      </div>
+      <div class="stat-box">
+        <div>Returned</div>
+        <strong id="statReturned">0</strong>
+      </div>
+    </div>
+    <p class="muted">Dashboard current month ke data par based hai.</p>
+  </section>
+
+  <!-- IMPORT / EXPORT -->
   <section class="card" id="backupCard">
-    <h2><span class="bar"></span>Backup & Restore</h2>
+    <h2><span class="bar"></span>Backup, import & export</h2>
     <div class="row">
       <div class="col-4">
-        <button class="btn-secondary" onclick="exportData()">Export JSON</button>
+        <button class="btn-secondary" onclick="exportData()">Export data (JSON)</button>
       </div>
       <div class="col-4">
         <input type="file" id="importFile" accept=".json" />
       </div>
       <div class="col-4">
-        <button class="btn-secondary" onclick="importData()">Import</button>
+        <button class="btn-secondary" onclick="importData()">Import data</button>
       </div>
     </div>
+    <p class="muted">JSON file ko mobile / PC mein save karke backup rakh sakte hain. Import se wapas laa sakte hain.</p>
   </section>
 
   <!-- ALL ENTRIES -->
   <section class="card" id="entriesCard">
     <h2><span class="bar"></span>All repair entries</h2>
-
+    <div class="muted">Status button se cycle hoga: In → Ready → Returned → In. Neeche filters se view control kar sakte hain.</div>
     <div class="filter-row">
       <button class="filter-btn active" onclick="setFilter('all', this)">All</button>
       <button class="filter-btn" onclick="setFilter('in', this)">In repair</button>
       <button class="filter-btn" onclick="setFilter('ready', this)">Ready</button>
       <button class="filter-btn" onclick="setFilter('returned', this)">Returned</button>
     </div>
-
     <div style="overflow-x:auto; max-height:320px; margin-top:6px;">
       <table id="entriesTable">
         <thead>
@@ -167,7 +437,6 @@
       </table>
     </div>
   </section>
-
 </main>
 
 <!-- Floating Add Button -->
@@ -175,17 +444,369 @@
   <span>+</span>
 </div>
 
-<!-- CUSTOMER PROFILE BOTTOM SHEET -->
-<div id="customerModal" class="modal">
-  <div class="modal-header">
-    <div class="modal-drag"></div>
-    <h3>Customer Profile</h3>
-  </div>
-  <div class="modal-body" id="customerModalBody"></div>
-</div>
+<script>
+  const STORAGE_KEY = 'abuNawazEntries';
+  const ADMIN_KEY = 'abuNawazAdmin';
+  let currentFilter = 'all';
 
-<script src="app.js"></script>
-<script src="modal.js"></script>
+  function getEntries() {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  }
 
+  function saveEntries(entries, showIndicator = false) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+    renderTable();
+    updateDashboard();
+    if (showIndicator) flashSaved('entrySaved');
+  }
+
+  function getAdmin() {
+    const raw = localStorage.getItem(ADMIN_KEY);
+    return raw ? JSON.parse(raw) : { whatsapp: '', pin: '' };
+  }
+
+  function saveAdminSettings() {
+    const whatsapp = document.getElementById('adminWhatsapp').value.trim();
+    const pin = document.getElementById('adminPin').value.trim();
+    localStorage.setItem(ADMIN_KEY, JSON.stringify({ whatsapp, pin }));
+    flashSaved('adminSaved');
+  }
+
+  function loadAdminSettings() {
+    const admin = getAdmin();
+    document.getElementById('adminWhatsapp').value = admin.whatsapp || '';
+    document.getElementById('adminPin').value = admin.pin || '';
+  }
+
+  function flashSaved(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.style.display = 'inline-flex';
+    setTimeout(() => { el.style.display = 'none'; }, 1500);
+  }
+
+  function cleanNumber(num) {
+    if (!num) return '';
+    let n = num.toString().replace(/[^0-9]/g, '');
+    // UAE style auto-fix: 05xxxxxxxx -> 9715xxxxxxxx
+    if (n.startsWith('05') && n.length >= 9) {
+      n = '971' + n.slice(1);
+    }
+    return n;
+  }
+
+  function addEntry() {
+    const name = document.getElementById('custName').value.trim();
+    const phoneRaw = document.getElementById('custPhone').value.trim();
+    const phone = cleanNumber(phoneRaw);
+    const category = document.getElementById('itemCategory').value;
+    const itemName = document.getElementById('itemName').value.trim();
+    const price = parseFloat(document.getElementById('itemPrice').value || '0');
+    const status = document.getElementById('itemStatus').value;
+    const issue = document.getElementById('itemIssue').value.trim();
+    const notes = document.getElementById('itemNotes').value.trim();
+
+    if (!name || !phone || !itemName) {
+      alert('Customer name, phone aur item name required hain.');
+      return;
+    }
+
+    const entries = getEntries();
+    const now = new Date();
+    const entry = {
+      id: Date.now(),
+      date: now.toISOString(),
+      name,
+      phone,
+      category,
+      itemName,
+      price,
+      status,
+      issue,
+      notes
+    };
+    entries.unshift(entry);
+    saveEntries(entries, true);
+    showWhatsAppLinks(entry, 'add');
+
+    // Multiple items ke liye customer info rehne do, sirf item clear karo
+    document.getElementById('itemCategory').value = '';
+    document.getElementById('itemName').value = '';
+    document.getElementById('itemPrice').value = '';
+    document.getElementById('itemStatus').value = 'in';
+    document.getElementById('itemIssue').value = '';
+    document.getElementById('itemNotes').value = '';
+  }
+
+  function statusLabel(status) {
+    if (status === 'ready') return 'Ready / Out';
+    if (status === 'returned') return 'Returned';
+    return 'In repair';
+  }
+
+  function statusClass(status) {
+    if (status === 'ready') return 'badge status-ready';
+    if (status === 'returned') return 'badge status-returned';
+    return 'badge status-in';
+  }
+
+  function renderTable() {
+    const entries = getEntries();
+    const tbody = document.querySelector('#entriesTable tbody');
+    tbody.innerHTML = '';
+    entries
+      .filter(e => currentFilter === 'all' || e.status === currentFilter)
+      .forEach((e, index) => {
+        const tr = document.createElement('tr');
+        const d = new Date(e.date);
+        const dateStr = d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+        tr.innerHTML = `
+          <td>${index + 1}</td>
+          <td>${dateStr}</td>
+          <td>${e.name}</td>
+          <td>${e.phone}</td>
+          <td>${e.itemName}</td>
+          <td>${e.category || '-'}</td>
+          <td>${e.issue || '-'}</td>
+          <td>${(e.price || 0).toFixed(2)}</td>
+          <td><span class="${statusClass(e.status)}">${statusLabel(e.status)}</span></td>
+          <td>
+            <button class="btn-small btn-secondary" onclick="cycleStatus(${e.id})">Status</button>
+            <button class="btn-small btn-secondary" onclick="waDirect(${e.id}, 'admin')">WA Admin</button>
+            <button class="btn-small btn-secondary" onclick="waDirect(${e.id}, 'customer')">WA Cust</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+  }
+
+  function cycleStatus(id) {
+    const entries = getEntries();
+    const idx = entries.findIndex(e => e.id === id);
+    if (idx === -1) return;
+    const current = entries[idx].status;
+    let next = 'in';
+    if (current === 'in') next = 'ready';
+    else if (current === 'ready') next = 'returned';
+    else if (current === 'returned') next = 'in';
+    entries[idx].status = next;
+    saveEntries(entries, true);
+    showWhatsAppLinks(entries[idx], 'status');
+  }
+
+  function buildMessages(entry, type) {
+    const baseMsg =
+      `Abu Nawaz Electronic\n` +
+      `Customer: ${entry.name}\n` +
+      `Phone: ${entry.phone}\n` +
+      `Item: ${entry.itemName}\n` +
+      `Category: ${entry.category}\n` +
+      `Issue: ${entry.issue}\n` +
+      `Price: ${entry.price}\n` +
+      `Status: ${statusLabel(entry.status)}`;
+
+    let adminText = '';
+    let custText = '';
+
+    if (type === 'add') {
+      adminText = 'New item added:\n' + baseMsg;
+      custText = 'Your item has been received:\n' + baseMsg;
+    } else if (type === 'status') {
+      adminText = 'Status updated:\n' + baseMsg;
+      if (entry.status === 'ready') {
+        custText = 'Your item is ready / out with price:\n' + baseMsg;
+      } else if (entry.status === 'returned') {
+        custText = 'Your item has been returned / delivered:\n' + baseMsg;
+      } else {
+        custText = 'Status updated:\n' + baseMsg;
+      }
+    }
+    return { adminText, custText };
+  }
+
+  function showWhatsAppLinks(entry, type) {
+    const admin = getAdmin();
+    const adminNum = cleanNumber(admin.whatsapp);
+    const { adminText, custText } = buildMessages(entry, type);
+
+    const adminUrl = adminNum
+      ? `https://wa.me/${adminNum}?text=${encodeURIComponent(adminText)}`
+      : '';
+    const custUrl = entry.phone
+      ? `https://wa.me/${entry.phone}?text=${encodeURIComponent(custText)}`
+      : '';
+
+    let html = '<strong>WhatsApp quick links:</strong><br />';
+    if (adminUrl) {
+      html += `<a href="${adminUrl}" target="_blank">Send to Admin</a>`;
+    } else {
+      html += 'Admin number not set. ';
+    }
+    if (custUrl) {
+      html += ` | <a href="${custUrl}" target="_blank">Send to Customer</a>`;
+    }
+    document.getElementById('waLinks').innerHTML = html;
+  }
+
+  function waDirect(id, who) {
+    const entries = getEntries();
+    const entry = entries.find(e => e.id === id);
+    if (!entry) return;
+    const admin = getAdmin();
+    const { adminText, custText } = buildMessages(entry, 'status');
+
+    let number = '';
+    let message = '';
+
+    if (who === 'admin') {
+      number = cleanNumber(admin.whatsapp);
+      message = adminText;
+    } else {
+      number = cleanNumber(entry.phone);
+      message = custText;
+    }
+
+    if (!number) {
+      alert('WhatsApp number missing.');
+      return;
+    }
+
+    const url = `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
+    window.location.href = url;
+  }
+
+  function searchByPhone() {
+    const phoneRaw = document.getElementById('searchPhone').value.trim();
+    const phone = cleanNumber(phoneRaw);
+    if (!phone) {
+      alert('Phone number enter karein.');
+      return;
+    }
+    const entries = getEntries().filter(e => e.phone.includes(phone));
+    const div = document.getElementById('searchResult');
+    if (!entries.length) {
+      div.innerHTML = 'Is number ke liye koi record nahi mila.';
+      return;
+    }
+    let html = `<strong>${entries.length} record(s) found:</strong><br/>`;
+    entries.forEach(e => {
+      const d = new Date(e.date);
+      html += `
+        <div style="margin-top:4px; padding:4px 6px; border-radius:8px; border:1px solid #e5e7eb; background:#fdf2f8;">
+          <strong>${e.itemName}</strong> (${statusLabel(e.status)}) – ${d.toLocaleDateString()}
+          <br/>Issue: ${e.issue || '-'} | Price: ${(e.price || 0).toFixed(2)}
+        </div>
+      `;
+    });
+    div.innerHTML = html;
+  }
+
+  function clearSearch() {
+    document.getElementById('searchPhone').value = '';
+    document.getElementById('searchResult').innerHTML = '';
+  }
+
+  function updateDashboard() {
+    const entries = getEntries();
+    const now = new Date();
+    const month = now.getMonth();
+    const year = now.getFullYear();
+    let total = 0, amount = 0, inC = 0, readyC = 0, retC = 0;
+    entries.forEach(e => {
+      const d = new Date(e.date);
+      if (d.getMonth() === month && d.getFullYear() === year) {
+        total++;
+        amount += e.price || 0;
+        if (e.status === 'in') inC++;
+        else if (e.status === 'ready') readyC++;
+        else if (e.status === 'returned') retC++;
+      }
+    });
+    document.getElementById('statTotal').textContent = total;
+    document.getElementById('statAmount').textContent = amount.toFixed(2);
+    document.getElementById('statIn').textContent = inC;
+    document.getElementById('statReady').textContent = readyC;
+    document.getElementById('statReturned').textContent = retC;
+  }
+
+  function exportData() {
+    const data = {
+      admin: getAdmin(),
+      entries: getEntries()
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'abu-nawaz-backup.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function importData() {
+    const fileInput = document.getElementById('importFile');
+    if (!fileInput.files.length) {
+      alert('Please select a JSON file first.');
+      return;
+    }
+    const file = fileInput.files[0];
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        const data = JSON.parse(e.target.result);
+        if (data.admin) {
+          localStorage.setItem(ADMIN_KEY, JSON.stringify(data.admin));
+        }
+        if (Array.isArray(data.entries)) {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(data.entries));
+        }
+        loadAdminSettings();
+        renderTable();
+        updateDashboard();
+        alert('Data imported successfully.');
+      } catch (err) {
+        alert('Invalid JSON file.');
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function resetAllData() {
+    const pin = prompt('Reset PIN enter karein (Admin settings mein jo set kiya hai):');
+    const admin = getAdmin();
+    if (!admin.pin) {
+      alert('Pehle Admin Reset PIN set karein.');
+      return;
+    }
+    if (pin !== admin.pin) {
+      alert('Wrong PIN.');
+      return;
+    }
+    if (!confirm('Kya aap waqai saara data reset karna chahte hain?')) return;
+    localStorage.removeItem(STORAGE_KEY);
+    renderTable();
+    updateDashboard();
+    alert('All entries deleted. Admin settings same rahengi.');
+  }
+
+  function scrollToSection(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.scrollIntoView({ behavior:'smooth', block:'start' });
+  }
+
+  function setFilter(filter, btn) {
+    currentFilter = filter;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderTable();
+  }
+
+  // INIT
+  loadAdminSettings();
+  renderTable();
+  updateDashboard();
+</script>
 </body>
 </html>
