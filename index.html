@@ -1,8 +1,9 @@
+<!-- ========== PART 1: HTML + CSS (TOP) ========== -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Electric Repair POS</title>
+  <title>Electronics & Vacuum Repair POS</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     * { box-sizing: border-box; font-family: system-ui, sans-serif; }
@@ -10,13 +11,14 @@
     header { background:#1f4f8f; color:#fff; padding:10px 15px; display:flex; justify-content:space-between; align-items:center; }
     header h1 { font-size:18px; margin:0; }
     header small { font-size:11px; opacity:0.8; }
-    .container { padding:10px; max-width:900px; margin:0 auto; }
+    .container { padding:10px; max-width:1000px; margin:0 auto; }
     .tabs { display:flex; gap:5px; margin-bottom:10px; flex-wrap:wrap; }
     .tab-btn { flex:1; padding:8px; border:none; background:#e0e4f0; font-size:13px; border-radius:4px; cursor:pointer; }
     .tab-btn.active { background:#1f4f8f; color:#fff; }
     .card { background:#fff; border-radius:6px; padding:10px; margin-bottom:10px; box-shadow:0 1px 3px rgba(0,0,0,0.08); }
     .card h2 { font-size:15px; margin:0 0 8px; }
     .row { display:flex; gap:8px; flex-wrap:wrap; }
+    .col-4 { flex:1 1 30%; }
     .col-6 { flex:1 1 48%; }
     .col-12 { flex:1 1 100%; }
     label { font-size:12px; display:block; margin-bottom:3px; }
@@ -34,6 +36,7 @@
     th { background:#f0f2f8; font-weight:600; }
     .badge { padding:2px 6px; border-radius:10px; font-size:10px; }
     .status-Received { background:#f1c40f; color:#000; }
+    .status-Diagnosing { background:#9b59b6; color:#fff; }
     .status-InRepair { background:#e67e22; color:#fff; }
     .status-Ready { background:#27ae60; color:#fff; }
     .status-Delivered { background:#3498db; color:#fff; }
@@ -51,14 +54,20 @@
       box-shadow:0 2px 8px rgba(0,0,0,0.25);
     }
     .login-box h2 { margin-top:0; font-size:16px; }
+    .status-tabs { display:flex; gap:4px; flex-wrap:wrap; margin-top:4px; }
+    .status-tab-btn {
+      flex:1 1 auto; padding:4px 6px; font-size:10px; border-radius:999px;
+      border:none; cursor:pointer; background:#e0e4f0;
+    }
+    .status-tab-btn.active { background:#1f4f8f; color:#fff; }
   </style>
 </head>
 <body>
 
 <header>
   <div>
-    <h1>Electric Repair POS</h1>
-    <small>For: Your Shop (Local Browser Version)</small>
+    <h1>Electronics & Vacuum Repair POS</h1>
+    <small>Local Browser Version (GitHub Pages Ready)</small>
   </div>
   <div>
     <small id="todayDate"></small><br />
@@ -95,18 +104,18 @@
     <div class="stat-grid">
       <div class="stat">
         <span>Daily Sales</span>
-        <strong id="dailySales">PKR 0</strong>
+        <strong id="dailySales">AED 0</strong>
         <span id="dailyInvoices">0 invoices</span>
       </div>
       <div class="stat">
         <span>Monthly Sales</span>
-        <strong id="monthlySales">PKR 0</strong>
+        <strong id="monthlySales">AED 0</strong>
         <span id="monthlyInvoices">0 invoices</span>
       </div>
       <div class="stat">
         <span>Pending Jobs</span>
         <strong id="pendingJobs">0</strong>
-        <span>Received + In Repair</span>
+        <span>Received + Diagnosing + In Repair</span>
       </div>
       <div class="stat">
         <span>Ready to Deliver</span>
@@ -116,7 +125,9 @@
     </div>
     <div style="margin-top:10px;" class="row">
       <div class="col-12">
-        <button class="secondary" onclick="resetDailyCounters()">Reset Daily Counters</button>
+        <button class="secondary" onclick="alert('Daily counters date se auto calculate hote hain. Manual reset ki zaroorat nahi.')">
+          Info: Daily counters auto
+        </button>
       </div>
     </div>
   </section>
@@ -137,20 +148,91 @@
         <label>Address (optional)</label>
         <input id="custAddress" />
       </div>
+
+      <div class="col-6">
+        <label>Category</label>
+        <select id="itemCategory">
+          <option value="">Select</option>
+          <option value="TV / Display">TV / Display</option>
+          <option value="Audio / Video">Audio / Video</option>
+          <option value="CCTV & Security">CCTV & Security</option>
+          <option value="Networking">Networking</option>
+          <option value="Vacuum Cleaner">Vacuum Cleaner</option>
+          <option value="Spare / Board">Spare / Board</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+
       <div class="col-6">
         <label>Item Type</label>
         <select id="itemType">
           <option value="">Select</option>
-          <option>Cooler</option>
-          <option>Fan</option>
-          <option>Motor</option>
-          <option>Water Pump</option>
-          <option>Fridge</option>
-          <option>Washing Machine</option>
-          <option>Other</option>
+          <!-- TV / Display -->
+          <optgroup label="TV / Display">
+            <option>LCD TV</option>
+            <option>LED TV</option>
+            <option>Smart TV</option>
+            <option>Android TV</option>
+            <option>OLED TV</option>
+            <option>QLED TV</option>
+            <option>Curved TV</option>
+            <option>Plasma TV</option>
+            <option>PC Monitor</option>
+            <option>Gaming Monitor</option>
+          </optgroup>
+          <!-- Audio / Video -->
+          <optgroup label="Audio / Video">
+            <option>Home Theater</option>
+            <option>Sound Bar</option>
+            <option>Speaker System</option>
+            <option>Woofer</option>
+            <option>Amplifier</option>
+            <option>DVD Player</option>
+            <option>Blu-ray Player</option>
+            <option>Receiver</option>
+            <option>Satellite Box</option>
+          </optgroup>
+          <!-- CCTV -->
+          <optgroup label="CCTV & Security">
+            <option>CCTV Camera</option>
+            <option>IP Camera</option>
+            <option>DVR</option>
+            <option>NVR</option>
+            <option>Video Door Phone</option>
+          </optgroup>
+          <!-- Networking -->
+          <optgroup label="Networking">
+            <option>WiFi Router</option>
+            <option>Access Point</option>
+            <option>Range Extender</option>
+            <option>Network Switch</option>
+          </optgroup>
+          <!-- Vacuum -->
+          <optgroup label="Vacuum Cleaners">
+            <option>Vacuum Cleaner</option>
+            <option>Wet & Dry Vacuum</option>
+            <option>Handheld Vacuum</option>
+            <option>Robot Vacuum</option>
+            <option>Stick Vacuum</option>
+            <option>Car Vacuum Cleaner</option>
+          </optgroup>
+          <!-- Spare / Board -->
+          <optgroup label="Spare / Board">
+            <option>LED Backlight Strips</option>
+            <option>Power Supply Board</option>
+            <option>Motherboard</option>
+            <option>T-Con Board</option>
+            <option>Inverter Board</option>
+            <option>TV Speakers</option>
+            <option>Remote Control</option>
+            <option>WiFi Module</option>
+            <option>Adapter / Charger</option>
+            <option>IR / Button Board</option>
+          </optgroup>
         </select>
       </div>
-      <div class="col-6">
+
+      <div class="col-12">
         <label>Brand / Model</label>
         <input id="itemModel" />
       </div>
@@ -158,13 +240,17 @@
         <label>Issue Detail</label>
         <textarea id="issueDetail"></textarea>
       </div>
-      <div class="col-6">
-        <label>Estimated Charges (PKR)</label>
+      <div class="col-4">
+        <label>Estimated Charges (AED)</label>
         <input type="number" id="estimate" />
       </div>
-      <div class="col-6">
-        <label>Advance (PKR)</label>
+      <div class="col-4">
+        <label>Advance (AED)</label>
         <input type="number" id="advance" />
+      </div>
+      <div class="col-4">
+        <label>Warranty (days)</label>
+        <input type="number" id="warrantyDays" placeholder="e.g. 15" />
       </div>
       <div class="col-12">
         <button class="primary" onclick="saveJob()">Save Job</button>
@@ -178,11 +264,12 @@
     <div class="top-actions">
       <button class="secondary" onclick="filterJobs('all')">All</button>
       <button class="secondary" onclick="filterJobs('Received')">Received</button>
+      <button class="secondary" onclick="filterJobs('Diagnosing')">Diagnosing</button>
       <button class="secondary" onclick="filterJobs('In Repair')">In Repair</button>
       <button class="secondary" onclick="filterJobs('Ready')">Ready</button>
       <button class="secondary" onclick="filterJobs('Delivered')">Delivered</button>
     </div>
-    <div class="small">Tap status buttons to update job. Use WhatsApp buttons for invoice / admin message.</div>
+    <div class="small">Status buttons tab type hain — directly status select karo. WhatsApp buttons se invoice / admin message bhejo.</div>
     <div style="overflow-x:auto; margin-top:6px;">
       <table>
         <thead>
@@ -192,6 +279,7 @@
             <th>Item</th>
             <th>Amount</th>
             <th>Status</th>
+            <th>Set Status</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -211,11 +299,12 @@
           <option>Staff Salary</option>
           <option>Electricity</option>
           <option>Parts / Material</option>
+          <option>Internet</option>
           <option>Other</option>
         </select>
       </div>
       <div class="col-6">
-        <label>Amount (PKR)</label>
+        <label>Amount (AED)</label>
         <input type="number" id="expAmount" />
       </div>
       <div class="col-12">
@@ -229,10 +318,10 @@
     <hr />
     <div class="row">
       <div class="col-6">
-        <strong>Today Expenses:</strong> <span id="todayExp">PKR 0</span>
+        <strong>Today Expenses:</strong> <span id="todayExp">AED 0</span>
       </div>
       <div class="col-6 right">
-        <strong>This Month:</strong> <span id="monthExp">PKR 0</span>
+        <strong>This Month:</strong> <span id="monthExp">AED 0</span>
       </div>
     </div>
     <div style="overflow-x:auto; margin-top:6px;">
@@ -282,15 +371,15 @@
 
 </div>
 
+<!-- ========== PART 2: JS (STORAGE, LOGIN, TABS, JOBS) ========== -->
 <script>
-  // ====== UTILITIES ======
-  const LS_JOBS = 'erp_jobs';
-  const LS_EXP = 'erp_expenses';
-  const LS_SETTINGS = 'erp_settings';
-  const LS_PIN = 'erp_pin';
+  const LS_JOBS = 'erp_jobs_v2';
+  const LS_EXP = 'erp_expenses_v2';
+  const LS_SETTINGS = 'erp_settings_v2';
+  const LS_PIN = 'erp_pin_v2';
 
   const todayStr = () => new Date().toISOString().slice(0,10);
-  const monthStr = () => new Date().toISOString().slice(0,7); // YYYY-MM
+  const monthStr = () => new Date().toISOString().slice(0,7);
 
   function loadJSON(key, def) {
     try {
@@ -302,7 +391,6 @@
     localStorage.setItem(key, JSON.stringify(val));
   }
 
-  // ====== LOGIN / PIN ======
   function initLogin() {
     const pin = localStorage.getItem(LS_PIN);
     const info = document.getElementById('loginInfoText');
@@ -337,7 +425,6 @@
     }
   }
 
-  // ====== TABS ======
   function switchTab(id, btn) {
     document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
     document.getElementById(id).classList.remove('hidden');
@@ -349,7 +436,6 @@
     if (id === 'settings') loadSettingsToUI();
   }
 
-  // ====== JOBS ======
   function getJobs() { return loadJSON(LS_JOBS, []); }
   function setJobs(j) { saveJSON(LS_JOBS, j); }
 
@@ -357,11 +443,13 @@
     const name = document.getElementById('custName').value.trim();
     const phone = document.getElementById('custPhone').value.trim();
     const addr = document.getElementById('custAddress').value.trim();
+    const cat = document.getElementById('itemCategory').value;
     const type = document.getElementById('itemType').value;
     const model = document.getElementById('itemModel').value.trim();
     const issue = document.getElementById('issueDetail').value.trim();
     const est = parseFloat(document.getElementById('estimate').value || '0');
     const adv = parseFloat(document.getElementById('advance').value || '0');
+    const warrantyDays = parseInt(document.getElementById('warrantyDays').value || '0', 10);
 
     if (!name || !phone || !type) {
       return alert('Name, Phone, Item Type zaroori hain.');
@@ -369,20 +457,29 @@
 
     const jobs = getJobs();
     const id = jobs.length ? jobs[jobs.length-1].id + 1 : 1;
+    const now = new Date().toISOString();
+    const warrantyTill = warrantyDays > 0 ? new Date(Date.now() + warrantyDays*24*60*60*1000).toISOString() : null;
+
     const job = {
       id,
       name,
       phone,
       addr,
+      category: cat,
       type,
       model,
       issue,
       estimate: est,
       advance: adv,
-      amount: est, // simple: final = estimate
+      amount: est,
       status: 'Received',
-      createdAt: new Date().toISOString(),
-      deliveredAt: null
+      createdAt: now,
+      diagnosingAt: null,
+      inRepairAt: null,
+      readyAt: null,
+      deliveredAt: null,
+      warrantyDays,
+      warrantyTill
     };
     jobs.push(job);
     setJobs(jobs);
@@ -391,9 +488,10 @@
   }
 
   function clearNewJobForm() {
-    ['custName','custPhone','custAddress','itemModel','issueDetail','estimate','advance'].forEach(id => {
+    ['custName','custPhone','custAddress','itemModel','issueDetail','estimate','advance','warrantyDays'].forEach(id => {
       document.getElementById(id).value = '';
     });
+    document.getElementById('itemCategory').value = '';
     document.getElementById('itemType').value = '';
   }
 
@@ -408,18 +506,25 @@
     const jobs = getJobs();
     const tbody = document.getElementById('jobsTableBody');
     tbody.innerHTML = '';
-    const filtered = jobs.filter(j => currentFilter === 'all' ? true : j.status === statusLabelToInternal(currentFilter));
-    filtered.forEach(j => {
+    const filtered = jobs.filter(j => currentFilter === 'all' ? true : j.status === currentFilter);
+    filtered.slice().reverse().forEach(j => {
       const tr = document.createElement('tr');
       const statusClass = 'status-' + j.status.replace(' ', '');
+      const warrantyText = j.warrantyDays ? `W: ${j.warrantyDays}d` : '';
       tr.innerHTML = `
         <td>${j.id}</td>
         <td>${j.name}<br><span class="small">${j.phone}</span></td>
-        <td>${j.type}<br><span class="small">${j.model || ''}</span></td>
-        <td>PKR ${j.amount.toFixed(0)}</td>
+        <td>${j.category || ''}<br><span class="small">${j.type} ${j.model ? '('+j.model+')' : ''}</span></td>
+        <td>AED ${j.amount.toFixed(0)}<br><span class="small">${warrantyText}</span></td>
         <td><span class="badge ${statusClass}">${j.status}</span></td>
         <td>
-          <button class="secondary" onclick="cycleStatus(${j.id})">Next</button>
+          <div class="status-tabs">
+            ${['Received','Diagnosing','In Repair','Ready','Delivered'].map(s => `
+              <button class="status-tab-btn ${j.status===s?'active':''}" onclick="setStatus(${j.id}, '${s}')">${s}</button>
+            `).join('')}
+          </div>
+        </td>
+        <td>
           <button class="secondary" onclick="sendInvoiceWhatsApp(${j.id})">Cust WA</button>
           <button class="secondary" onclick="sendAdminWhatsApp(${j.id})">Admin WA</button>
           <button class="danger" onclick="deleteJob(${j.id})">X</button>
@@ -430,22 +535,16 @@
     refreshDashboard();
   }
 
-  function statusLabelToInternal(label) {
-    if (label === 'In Repair') return 'In Repair';
-    return label;
-  }
-
-  function cycleStatus(id) {
+  function setStatus(id, status) {
     const jobs = getJobs();
     const idx = jobs.findIndex(j => j.id === id);
     if (idx === -1) return;
-    const order = ['Received','In Repair','Ready','Delivered'];
-    let cur = jobs[idx].status;
-    let next = order[(order.indexOf(cur)+1) % order.length];
-    jobs[idx].status = next;
-    if (next === 'Delivered') {
-      jobs[idx].deliveredAt = new Date().toISOString();
-    }
+    const now = new Date().toISOString();
+    jobs[idx].status = status;
+    if (status === 'Diagnosing') jobs[idx].diagnosingAt = now;
+    if (status === 'In Repair') jobs[idx].inRepairAt = now;
+    if (status === 'Ready') jobs[idx].readyAt = now;
+    if (status === 'Delivered') jobs[idx].deliveredAt = now;
     setJobs(jobs);
     renderJobs();
   }
@@ -458,7 +557,6 @@
     renderJobs();
   }
 
-  // ====== DASHBOARD ======
   function refreshDashboard() {
     const jobs = getJobs();
     const today = todayStr();
@@ -469,7 +567,7 @@
     let pending = 0, ready = 0;
 
     jobs.forEach(j => {
-      if (j.status === 'Received' || j.status === 'In Repair') pending++;
+      if (['Received','Diagnosing','In Repair'].includes(j.status)) pending++;
       if (j.status === 'Ready') ready++;
       if (j.status === 'Delivered' && j.deliveredAt) {
         const d = j.deliveredAt.slice(0,10);
@@ -485,9 +583,9 @@
       }
     });
 
-    document.getElementById('dailySales').textContent = 'PKR ' + dailySales.toFixed(0);
+    document.getElementById('dailySales').textContent = 'AED ' + dailySales.toFixed(0);
     document.getElementById('dailyInvoices').textContent = dailyInv + ' invoices';
-    document.getElementById('monthlySales').textContent = 'PKR ' + monthlySales.toFixed(0);
+    document.getElementById('monthlySales').textContent = 'AED ' + monthlySales.toFixed(0);
     document.getElementById('monthlyInvoices').textContent = monthlyInv + ' invoices';
     document.getElementById('pendingJobs').textContent = pending;
     document.getElementById('readyJobs').textContent = ready;
@@ -495,13 +593,6 @@
     renderExpensesSummary();
   }
 
-  function resetDailyCounters() {
-    if (!confirm('Daily counters reset karne hain? (Data delete nahi hoga)')) return;
-    // Counters are calculated from deliveredAt, so nothing to reset in data.
-    alert('Daily counters time/date ke hisaab se auto calculate hote hain. Aaj ke liye already fresh hain.');
-  }
-
-  // ====== EXPENSES ======
   function getExpenses() { return loadJSON(LS_EXP, []); }
   function setExpenses(e) { saveJSON(LS_EXP, e); }
 
@@ -533,7 +624,7 @@
       tr.innerHTML = `
         <td>${e.date.slice(0,10)}</td>
         <td>${e.cat}</td>
-        <td>PKR ${e.amt.toFixed(0)}</td>
+        <td>AED ${e.amt.toFixed(0)}</td>
         <td>${e.note || ''}</td>
       `;
       tbody.appendChild(tr);
@@ -552,11 +643,10 @@
       if (d === today) t += e.amt;
       if (mm === month) m += e.amt;
     });
-    document.getElementById('todayExp').textContent = 'PKR ' + t.toFixed(0);
-    document.getElementById('monthExp').textContent = 'PKR ' + m.toFixed(0);
+    document.getElementById('todayExp').textContent = 'AED ' + t.toFixed(0);
+    document.getElementById('monthExp').textContent = 'AED ' + m.toFixed(0);
   }
 
-  // ====== SETTINGS / DATA ======
   function getSettings() { return loadJSON(LS_SETTINGS, { adminWhatsApp: '971501912040' }); }
   function setSettings(s) { saveJSON(LS_SETTINGS, s); }
 
@@ -582,7 +672,7 @@
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'electric_repair_data.json';
+    a.download = 'electronics_vacuum_repair_data.json';
     a.click();
     URL.revokeObjectURL(url);
   }
@@ -611,31 +701,32 @@
     if (!confirm('Saara data delete ho jayega. Sure?')) return;
     localStorage.removeItem(LS_JOBS);
     localStorage.removeItem(LS_EXP);
-    // settings & pin ko chhor sakte ho, ya unko bhi:
-    // localStorage.removeItem(LS_SETTINGS);
     renderJobs();
     renderExpenses();
     refreshDashboard();
   }
 
-  // ====== WHATSAPP ======
   function sendInvoiceWhatsApp(id) {
     const jobs = getJobs();
     const j = jobs.find(x => x.id === id);
     if (!j) return;
     if (!j.phone) return alert('Customer phone missing.');
+    const warrantyLine = j.warrantyDays ? `Warranty: ${j.warrantyDays} days\n` : '';
     const text =
-`Electric Repair Invoice
+`Electronics & Vacuum Repair Invoice
 Job ID: ${j.id}
 Customer: ${j.name}
 Phone: ${j.phone}
-Item: ${j.type} (${j.model || ''})
-Issue: ${j.issue || ''}
-Status: ${j.status}
-Amount: PKR ${j.amount.toFixed(0)}
-Advance: PKR ${j.advance.toFixed(0)}
-Balance: PKR ${(j.amount - j.advance).toFixed(0)}
 
+Category: ${j.category || ''}
+Item: ${j.type} ${j.model ? '('+j.model+')' : ''}
+Issue: ${j.issue || ''}
+
+Status: ${j.status}
+Amount: AED ${j.amount.toFixed(0)}
+Advance: AED ${j.advance.toFixed(0)}
+Balance: AED ${(j.amount - j.advance).toFixed(0)}
+${warrantyLine}
 Shukriya!`;
     const url = 'https://wa.me/' + encodeURIComponent(j.phone) + '?text=' + encodeURIComponent(text);
     window.open(url, '_blank');
@@ -648,19 +739,20 @@ Shukriya!`;
     const s = getSettings();
     if (!s.adminWhatsApp) return alert('Admin WhatsApp number settings mein set karo.');
     const text =
-`New/Updated Repair Job
+`Repair Job Update
 Job ID: ${j.id}
 Customer: ${j.name} (${j.phone})
-Item: ${j.type} (${j.model || ''})
+Category: ${j.category || ''}
+Item: ${j.type} ${j.model ? '('+j.model+')' : ''}
 Issue: ${j.issue || ''}
+
 Status: ${j.status}
-Amount: PKR ${j.amount.toFixed(0)}
-Advance: PKR ${j.advance.toFixed(0)}`;
+Amount: AED ${j.amount.toFixed(0)}
+Advance: AED ${j.advance.toFixed(0)}`;
     const url = 'https://wa.me/' + encodeURIComponent(s.adminWhatsApp) + '?text=' + encodeURIComponent(text);
     window.open(url, '_blank');
   }
 
-  // ====== INIT ======
   document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('todayDate').textContent = todayStr();
     initLogin();
