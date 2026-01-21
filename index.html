@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Electric Repair POS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    * { box-sizing: border-box; font-family: system-ui, sans-serif; }
+    body { margin: 0; background:#f4f6fb; color:#222; }
+    header { background:#1f4f8f; color:#fff; padding:10px 15px; display:flex; justify-content:space-between; align-items:center; }
+    header h1 { font-size:18px; margin:0; }
+    header small { font-size:11px; opacity:0.8; }
+    .container { padding:10px; max-width:900px; margin:0 auto; }
+    .tabs { display:flex; gap:5px; margin-bottom:10px; flex-wrap:wrap; }
+    .tab-btn { flex:1; padding:8px; border:none; background:#e0e4f0; font-size:13px; border-radius:4px; cursor:pointer; }
+    .tab-btn.active { background:#1f4f8f; color:#fff; }
+    .card { background:#fff; border-radius:6px; padding:10px; margin-bottom:10px; box-shadow:0 1px 3px rgba(0,0,0,0.08); }
+    .card h2 { font-size:15px; margin:0 0 8px; }
+    .row { display:flex; gap:8px; flex-wrap:wrap; }
+    .col-6 { flex:1 1 48%; }
+    .col-12 { flex:1 1 100%; }
+    label { font-size:12px; display:block; margin-bottom:3px; }
+    input, select, textarea { width:100%; padding:6px 8px; font-size:13px; border-radius:4px; border:1px solid #ccd1e0; }
+    textarea { resize:vertical; min-height:60px; }
+    button.primary { background:#1f4f8f; color:#fff; border:none; padding:8px 12px; border-radius:4px; font-size:13px; cursor:pointer; }
+    button.secondary { background:#e0e4f0; color:#222; border:none; padding:6px 10px; border-radius:4px; font-size:12px; cursor:pointer; }
+    button.danger { background:#c0392b; color:#fff; border:none; padding:6px 10px; border-radius:4px; font-size:12px; cursor:pointer; }
+    .stat-grid { display:flex; gap:8px; flex-wrap:wrap; }
+    .stat { flex:1 1 48%; background:#1f4f8f; color:#fff; border-radius:6px; padding:8px; font-size:12px; }
+    .stat span { display:block; font-size:11px; opacity:0.8; }
+    .stat strong { font-size:16px; }
+    table { width:100%; border-collapse:collapse; font-size:12px; }
+    th, td { padding:6px 4px; border-bottom:1px solid #eee; text-align:left; }
+    th { background:#f0f2f8; font-weight:600; }
+    .badge { padding:2px 6px; border-radius:10px; font-size:10px; }
+    .status-Received { background:#f1c40f; color:#000; }
+    .status-InRepair { background:#e67e22; color:#fff; }
+    .status-Ready { background:#27ae60; color:#fff; }
+    .status-Delivered { background:#3498db; color:#fff; }
+    .top-actions { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:6px; }
+    .top-actions button { flex:1 1 auto; }
+    .small { font-size:11px; opacity:0.8; }
+    .right { text-align:right; }
+    .hidden { display:none; }
+    .login-overlay {
+      position:fixed; inset:0; background:rgba(0,0,0,0.6);
+      display:flex; align-items:center; justify-content:center; z-index:999;
+    }
+    .login-box {
+      background:#fff; padding:15px; border-radius:6px; width:90%; max-width:320px;
+      box-shadow:0 2px 8px rgba(0,0,0,0.25);
+    }
+    .login-box h2 { margin-top:0; font-size:16px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Electric Repair POS</h1>
+    <small>For: Your Shop (Local Browser Version)</small>
+  </div>
+  <div>
+    <small id="todayDate"></small><br />
+    <small id="loginUserLabel">Admin</small>
+  </div>
+</header>
+
+<div id="loginOverlay" class="login-overlay">
+  <div class="login-box">
+    <h2>Login / Setup PIN</h2>
+    <p class="small" id="loginInfoText"></p>
+    <label for="pinInput">PIN</label>
+    <input type="password" id="pinInput" maxlength="6" />
+    <div style="margin-top:10px; display:flex; gap:8px;">
+      <button class="primary" onclick="handleLogin()">Enter</button>
+      <button class="secondary" onclick="resetPin()">Reset PIN</button>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="dashboard" onclick="switchTab('dashboard', this)">Dashboard</button>
+    <button class="tab-btn" data-tab="newJob" onclick="switchTab('newJob', this)">New Job</button>
+    <button class="tab-btn" data-tab="jobs" onclick="switchTab('jobs', this)">Jobs</button>
+    <button class="tab-btn" data-tab="expenses" onclick="switchTab('expenses', this)">Expenses</button>
+    <button class="tab-btn" data-tab="settings" onclick="switchTab('settings', this)">Settings</button>
+  </div>
+
+  <!-- DASHBOARD -->
+  <section id="dashboard" class="card">
+    <h2>Dashboard</h2>
+    <div class="stat-grid">
+      <div class="stat">
+        <span>Daily Sales</span>
+        <strong id="dailySales">PKR 0</strong>
+        <span id="dailyInvoices">0 invoices</span>
+      </div>
+      <div class="stat">
+        <span>Monthly Sales</span>
+        <strong id="monthlySales">PKR 0</strong>
+        <span id="monthlyInvoices">0 invoices</span>
+      </div>
+      <div class="stat">
+        <span>Pending Jobs</span>
+        <strong id="pendingJobs">0</strong>
+        <span>Received + In Repair</span>
+      </div>
+      <div class="stat">
+        <span>Ready to Deliver</span>
+        <strong id="readyJobs">0</strong>
+        <span>Ready status</span>
+      </div>
+    </div>
+    <div style="margin-top:10px;" class="row">
+      <div class="col-12">
+        <button class="secondary" onclick="resetDailyCounters()">Reset Daily Counters</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEW JOB -->
+  <section id="newJob" class="card hidden">
+    <h2>New Repair Job</h2>
+    <div class="row">
+      <div class="col-6">
+        <label>Customer Name</label>
+        <input id="custName" />
+      </div>
+      <div class="col-6">
+        <label>Mobile Number</label>
+        <input id="custPhone" />
+      </div>
+      <div class="col-12">
+        <label>Address (optional)</label>
+        <input id="custAddress" />
+      </div>
+      <div class="col-6">
+        <label>Item Type</label>
+        <select id="itemType">
+          <option value="">Select</option>
+          <option>Cooler</option>
+          <option>Fan</option>
+          <option>Motor</option>
+          <option>Water Pump</option>
+          <option>Fridge</option>
+          <option>Washing Machine</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="col-6">
+        <label>Brand / Model</label>
+        <input id="itemModel" />
+      </div>
+      <div class="col-12">
+        <label>Issue Detail</label>
+        <textarea id="issueDetail"></textarea>
+      </div>
+      <div class="col-6">
+        <label>Estimated Charges (PKR)</label>
+        <input type="number" id="estimate" />
+      </div>
+      <div class="col-6">
+        <label>Advance (PKR)</label>
+        <input type="number" id="advance" />
+      </div>
+      <div class="col-12">
+        <button class="primary" onclick="saveJob()">Save Job</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- JOBS -->
+  <section id="jobs" class="card hidden">
+    <h2>Jobs</h2>
+    <div class="top-actions">
+      <button class="secondary" onclick="filterJobs('all')">All</button>
+      <button class="secondary" onclick="filterJobs('Received')">Received</button>
+      <button class="secondary" onclick="filterJobs('In Repair')">In Repair</button>
+      <button class="secondary" onclick="filterJobs('Ready')">Ready</button>
+      <button class="secondary" onclick="filterJobs('Delivered')">Delivered</button>
+    </div>
+    <div class="small">Tap status buttons to update job. Use WhatsApp buttons for invoice / admin message.</div>
+    <div style="overflow-x:auto; margin-top:6px;">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Customer</th>
+            <th>Item</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="jobsTableBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- EXPENSES -->
+  <section id="expenses" class="card hidden">
+    <h2>Expenses</h2>
+    <div class="row">
+      <div class="col-6">
+        <label>Category</label>
+        <select id="expCategory">
+          <option>Rent</option>
+          <option>Staff Salary</option>
+          <option>Electricity</option>
+          <option>Parts / Material</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="col-6">
+        <label>Amount (PKR)</label>
+        <input type="number" id="expAmount" />
+      </div>
+      <div class="col-12">
+        <label>Note (optional)</label>
+        <input id="expNote" />
+      </div>
+      <div class="col-12">
+        <button class="primary" onclick="addExpense()">Add Expense</button>
+      </div>
+    </div>
+    <hr />
+    <div class="row">
+      <div class="col-6">
+        <strong>Today Expenses:</strong> <span id="todayExp">PKR 0</span>
+      </div>
+      <div class="col-6 right">
+        <strong>This Month:</strong> <span id="monthExp">PKR 0</span>
+      </div>
+    </div>
+    <div style="overflow-x:auto; margin-top:6px;">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Cat</th>
+            <th>Amt</th>
+            <th>Note</th>
+          </tr>
+        </thead>
+        <tbody id="expTableBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SETTINGS -->
+  <section id="settings" class="card hidden">
+    <h2>Settings & Data</h2>
+    <div class="row">
+      <div class="col-12">
+        <label>Admin WhatsApp Number (without +)</label>
+        <input id="adminWhatsApp" placeholder="e.g. 971501912040" />
+      </div>
+      <div class="col-12">
+        <button class="primary" onclick="saveSettings()">Save Settings</button>
+      </div>
+    </div>
+    <hr />
+    <h3 style="font-size:14px;">Data Export / Import</h3>
+    <div class="row">
+      <div class="col-6">
+        <button class="secondary" onclick="exportData()">Export JSON</button>
+      </div>
+      <div class="col-6">
+        <input type="file" id="importFile" accept=".json" onchange="importData(event)" />
+      </div>
+      <div class="col-12" style="margin-top:8px;">
+        <button class="danger" onclick="wipeAllData()">Delete All Data</button>
+      </div>
+    </div>
+    <p class="small" style="margin-top:8px;">
+      Export file ko safe jagah rakh lo. Import se purana data overwrite ho sakta hai.
+    </p>
+  </section>
+
+</div>
+
+<script>
+  // ====== UTILITIES ======
+  const LS_JOBS = 'erp_jobs';
+  const LS_EXP = 'erp_expenses';
+  const LS_SETTINGS = 'erp_settings';
+  const LS_PIN = 'erp_pin';
+
+  const todayStr = () => new Date().toISOString().slice(0,10);
+  const monthStr = () => new Date().toISOString().slice(0,7); // YYYY-MM
+
+  function loadJSON(key, def) {
+    try {
+      const v = localStorage.getItem(key);
+      return v ? JSON.parse(v) : def;
+    } catch(e) { return def; }
+  }
+  function saveJSON(key, val) {
+    localStorage.setItem(key, JSON.stringify(val));
+  }
+
+  // ====== LOGIN / PIN ======
+  function initLogin() {
+    const pin = localStorage.getItem(LS_PIN);
+    const info = document.getElementById('loginInfoText');
+    if (!pin) {
+      info.textContent = 'Pehli dafa use kar rahe ho. Apna naya PIN set karo (yaad rakhna).';
+    } else {
+      info.textContent = 'Apna PIN enter karo.';
+    }
+    document.getElementById('loginOverlay').style.display = 'flex';
+  }
+
+  function handleLogin() {
+    const pinInput = document.getElementById('pinInput').value.trim();
+    if (!pinInput) return alert('PIN likho.');
+    const stored = localStorage.getItem(LS_PIN);
+    if (!stored) {
+      localStorage.setItem(LS_PIN, pinInput);
+      document.getElementById('loginOverlay').style.display = 'none';
+    } else {
+      if (stored === pinInput) {
+        document.getElementById('loginOverlay').style.display = 'none';
+      } else {
+        alert('Galat PIN.');
+      }
+    }
+  }
+
+  function resetPin() {
+    if (confirm('PIN reset karna hai? Purana PIN remove ho jayega.')) {
+      localStorage.removeItem(LS_PIN);
+      initLogin();
+    }
+  }
+
+  // ====== TABS ======
+  function switchTab(id, btn) {
+    document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
+    document.getElementById(id).classList.remove('hidden');
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    if (id === 'dashboard') refreshDashboard();
+    if (id === 'jobs') renderJobs();
+    if (id === 'expenses') renderExpenses();
+    if (id === 'settings') loadSettingsToUI();
+  }
+
+  // ====== JOBS ======
+  function getJobs() { return loadJSON(LS_JOBS, []); }
+  function setJobs(j) { saveJSON(LS_JOBS, j); }
+
+  function saveJob() {
+    const name = document.getElementById('custName').value.trim();
+    const phone = document.getElementById('custPhone').value.trim();
+    const addr = document.getElementById('custAddress').value.trim();
+    const type = document.getElementById('itemType').value;
+    const model = document.getElementById('itemModel').value.trim();
+    const issue = document.getElementById('issueDetail').value.trim();
+    const est = parseFloat(document.getElementById('estimate').value || '0');
+    const adv = parseFloat(document.getElementById('advance').value || '0');
+
+    if (!name || !phone || !type) {
+      return alert('Name, Phone, Item Type zaroori hain.');
+    }
+
+    const jobs = getJobs();
+    const id = jobs.length ? jobs[jobs.length-1].id + 1 : 1;
+    const job = {
+      id,
+      name,
+      phone,
+      addr,
+      type,
+      model,
+      issue,
+      estimate: est,
+      advance: adv,
+      amount: est, // simple: final = estimate
+      status: 'Received',
+      createdAt: new Date().toISOString(),
+      deliveredAt: null
+    };
+    jobs.push(job);
+    setJobs(jobs);
+    alert('Job saved. ID: ' + id);
+    clearNewJobForm();
+  }
+
+  function clearNewJobForm() {
+    ['custName','custPhone','custAddress','itemModel','issueDetail','estimate','advance'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
+    document.getElementById('itemType').value = '';
+  }
+
+  let currentFilter = 'all';
+
+  function filterJobs(status) {
+    currentFilter = status;
+    renderJobs();
+  }
+
+  function renderJobs() {
+    const jobs = getJobs();
+    const tbody = document.getElementById('jobsTableBody');
+    tbody.innerHTML = '';
+    const filtered = jobs.filter(j => currentFilter === 'all' ? true : j.status === statusLabelToInternal(currentFilter));
+    filtered.forEach(j => {
+      const tr = document.createElement('tr');
+      const statusClass = 'status-' + j.status.replace(' ', '');
+      tr.innerHTML = `
+        <td>${j.id}</td>
+        <td>${j.name}<br><span class="small">${j.phone}</span></td>
+        <td>${j.type}<br><span class="small">${j.model || ''}</span></td>
+        <td>PKR ${j.amount.toFixed(0)}</td>
+        <td><span class="badge ${statusClass}">${j.status}</span></td>
+        <td>
+          <button class="secondary" onclick="cycleStatus(${j.id})">Next</button>
+          <button class="secondary" onclick="sendInvoiceWhatsApp(${j.id})">Cust WA</button>
+          <button class="secondary" onclick="sendAdminWhatsApp(${j.id})">Admin WA</button>
+          <button class="danger" onclick="deleteJob(${j.id})">X</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+    refreshDashboard();
+  }
+
+  function statusLabelToInternal(label) {
+    if (label === 'In Repair') return 'In Repair';
+    return label;
+  }
+
+  function cycleStatus(id) {
+    const jobs = getJobs();
+    const idx = jobs.findIndex(j => j.id === id);
+    if (idx === -1) return;
+    const order = ['Received','In Repair','Ready','Delivered'];
+    let cur = jobs[idx].status;
+    let next = order[(order.indexOf(cur)+1) % order.length];
+    jobs[idx].status = next;
+    if (next === 'Delivered') {
+      jobs[idx].deliveredAt = new Date().toISOString();
+    }
+    setJobs(jobs);
+    renderJobs();
+  }
+
+  function deleteJob(id) {
+    if (!confirm('Is job ko delete karna hai?')) return;
+    let jobs = getJobs();
+    jobs = jobs.filter(j => j.id !== id);
+    setJobs(jobs);
+    renderJobs();
+  }
+
+  // ====== DASHBOARD ======
+  function refreshDashboard() {
+    const jobs = getJobs();
+    const today = todayStr();
+    const month = monthStr();
+
+    let dailySales = 0, dailyInv = 0;
+    let monthlySales = 0, monthlyInv = 0;
+    let pending = 0, ready = 0;
+
+    jobs.forEach(j => {
+      if (j.status === 'Received' || j.status === 'In Repair') pending++;
+      if (j.status === 'Ready') ready++;
+      if (j.status === 'Delivered' && j.deliveredAt) {
+        const d = j.deliveredAt.slice(0,10);
+        const m = j.deliveredAt.slice(0,7);
+        if (d === today) {
+          dailySales += j.amount;
+          dailyInv++;
+        }
+        if (m === month) {
+          monthlySales += j.amount;
+          monthlyInv++;
+        }
+      }
+    });
+
+    document.getElementById('dailySales').textContent = 'PKR ' + dailySales.toFixed(0);
+    document.getElementById('dailyInvoices').textContent = dailyInv + ' invoices';
+    document.getElementById('monthlySales').textContent = 'PKR ' + monthlySales.toFixed(0);
+    document.getElementById('monthlyInvoices').textContent = monthlyInv + ' invoices';
+    document.getElementById('pendingJobs').textContent = pending;
+    document.getElementById('readyJobs').textContent = ready;
+
+    renderExpensesSummary();
+  }
+
+  function resetDailyCounters() {
+    if (!confirm('Daily counters reset karne hain? (Data delete nahi hoga)')) return;
+    // Counters are calculated from deliveredAt, so nothing to reset in data.
+    alert('Daily counters time/date ke hisaab se auto calculate hote hain. Aaj ke liye already fresh hain.');
+  }
+
+  // ====== EXPENSES ======
+  function getExpenses() { return loadJSON(LS_EXP, []); }
+  function setExpenses(e) { saveJSON(LS_EXP, e); }
+
+  function addExpense() {
+    const cat = document.getElementById('expCategory').value;
+    const amt = parseFloat(document.getElementById('expAmount').value || '0');
+    const note = document.getElementById('expNote').value.trim();
+    if (!amt) return alert('Amount likho.');
+    const exp = getExpenses();
+    exp.push({
+      id: exp.length ? exp[exp.length-1].id + 1 : 1,
+      cat,
+      amt,
+      note,
+      date: new Date().toISOString()
+    });
+    setExpenses(exp);
+    document.getElementById('expAmount').value = '';
+    document.getElementById('expNote').value = '';
+    renderExpenses();
+  }
+
+  function renderExpenses() {
+    const exp = getExpenses();
+    const tbody = document.getElementById('expTableBody');
+    tbody.innerHTML = '';
+    exp.slice().reverse().forEach(e => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${e.date.slice(0,10)}</td>
+        <td>${e.cat}</td>
+        <td>PKR ${e.amt.toFixed(0)}</td>
+        <td>${e.note || ''}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+    renderExpensesSummary();
+  }
+
+  function renderExpensesSummary() {
+    const exp = getExpenses();
+    const today = todayStr();
+    const month = monthStr();
+    let t = 0, m = 0;
+    exp.forEach(e => {
+      const d = e.date.slice(0,10);
+      const mm = e.date.slice(0,7);
+      if (d === today) t += e.amt;
+      if (mm === month) m += e.amt;
+    });
+    document.getElementById('todayExp').textContent = 'PKR ' + t.toFixed(0);
+    document.getElementById('monthExp').textContent = 'PKR ' + m.toFixed(0);
+  }
+
+  // ====== SETTINGS / DATA ======
+  function getSettings() { return loadJSON(LS_SETTINGS, { adminWhatsApp: '971501912040' }); }
+  function setSettings(s) { saveJSON(LS_SETTINGS, s); }
+
+  function loadSettingsToUI() {
+    const s = getSettings();
+    document.getElementById('adminWhatsApp').value = s.adminWhatsApp || '';
+  }
+
+  function saveSettings() {
+    const num = document.getElementById('adminWhatsApp').value.trim();
+    if (!num) return alert('Admin WhatsApp number likho.');
+    setSettings({ adminWhatsApp: num });
+    alert('Settings saved.');
+  }
+
+  function exportData() {
+    const data = {
+      jobs: getJobs(),
+      expenses: getExpenses(),
+      settings: getSettings()
+    };
+    const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'electric_repair_data.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function importData(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+      try {
+        const data = JSON.parse(ev.target.result);
+        if (data.jobs) saveJSON(LS_JOBS, data.jobs);
+        if (data.expenses) saveJSON(LS_EXP, data.expenses);
+        if (data.settings) saveJSON(LS_SETTINGS, data.settings);
+        alert('Data imported.');
+        renderJobs();
+        renderExpenses();
+      } catch(err) {
+        alert('Invalid JSON file.');
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function wipeAllData() {
+    if (!confirm('Saara data delete ho jayega. Sure?')) return;
+    localStorage.removeItem(LS_JOBS);
+    localStorage.removeItem(LS_EXP);
+    // settings & pin ko chhor sakte ho, ya unko bhi:
+    // localStorage.removeItem(LS_SETTINGS);
+    renderJobs();
+    renderExpenses();
+    refreshDashboard();
+  }
+
+  // ====== WHATSAPP ======
+  function sendInvoiceWhatsApp(id) {
+    const jobs = getJobs();
+    const j = jobs.find(x => x.id === id);
+    if (!j) return;
+    if (!j.phone) return alert('Customer phone missing.');
+    const text =
+`Electric Repair Invoice
+Job ID: ${j.id}
+Customer: ${j.name}
+Phone: ${j.phone}
+Item: ${j.type} (${j.model || ''})
+Issue: ${j.issue || ''}
+Status: ${j.status}
+Amount: PKR ${j.amount.toFixed(0)}
+Advance: PKR ${j.advance.toFixed(0)}
+Balance: PKR ${(j.amount - j.advance).toFixed(0)}
+
+Shukriya!`;
+    const url = 'https://wa.me/' + encodeURIComponent(j.phone) + '?text=' + encodeURIComponent(text);
+    window.open(url, '_blank');
+  }
+
+  function sendAdminWhatsApp(id) {
+    const jobs = getJobs();
+    const j = jobs.find(x => x.id === id);
+    if (!j) return;
+    const s = getSettings();
+    if (!s.adminWhatsApp) return alert('Admin WhatsApp number settings mein set karo.');
+    const text =
+`New/Updated Repair Job
+Job ID: ${j.id}
+Customer: ${j.name} (${j.phone})
+Item: ${j.type} (${j.model || ''})
+Issue: ${j.issue || ''}
+Status: ${j.status}
+Amount: PKR ${j.amount.toFixed(0)}
+Advance: PKR ${j.advance.toFixed(0)}`;
+    const url = 'https://wa.me/' + encodeURIComponent(s.adminWhatsApp) + '?text=' + encodeURIComponent(text);
+    window.open(url, '_blank');
+  }
+
+  // ====== INIT ======
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('todayDate').textContent = todayStr();
+    initLogin();
+    refreshDashboard();
+  });
+</script>
+
+</body>
+</html>
