@@ -2,589 +2,190 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Abu Nawa Electronics – Repair POS</title>
+  <title>Abu Nawaz Electronic - Repair Manager</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-    * { box-sizing: border-box; font-family: system-ui, sans-serif; }
-    body { margin: 0; background:#f3f5fb; color:#222; transition: 0.2s; }
-    body.dark { background:#0f172a; color:#e5e7eb; }
-
-    header {
-      background:linear-gradient(135deg,#0f4c75,#1b262c);
-      color:#fff; padding:12px 15px;
-      display:flex; justify-content:space-between; align-items:center;
-      box-shadow:0 2px 6px rgba(0,0,0,0.25);
-    }
-    header h1 { font-size:18px; margin:0; }
-    header small { font-size:11px; opacity:0.85; }
-
-    .container { padding:10px; max-width:1000px; margin:auto; }
-
-    .tabs { display:flex; gap:6px; margin-bottom:10px; flex-wrap:wrap; }
-    .tab-btn {
-      flex:1; padding:8px; border:none; border-radius:999px;
-      background:#e5e7eb; cursor:pointer; font-size:13px;
-      display:flex; align-items:center; justify-content:center; gap:4px;
-    }
-    .tab-btn.active { background:#0f4c75; color:#fff; }
-
-    .card {
-      background:#fff; border-radius:10px; padding:12px; margin-bottom:10px;
-      box-shadow:0 1px 4px rgba(0,0,0,0.12);
-    }
-    body.dark .card { background:#111827; }
-
-    .row { display:flex; gap:8px; flex-wrap:wrap; }
-    .col-4 { flex:1 1 30%; }
-    .col-6 { flex:1 1 48%; }
-    .col-12 { flex:1 1 100%; }
-
-    label { font-size:12px; margin-bottom:3px; display:block; }
-    input, select, textarea {
-      width:100%; padding:6px 8px; border-radius:6px;
-      border:1px solid #cbd5f5; background:#f9fafb;
-    }
-
-    button.primary {
-      background:#0f4c75; color:#fff; border:none;
-      padding:8px 12px; border-radius:999px; cursor:pointer;
-    }
-    button.secondary {
-      background:#e5e7eb; border:none; padding:6px 10px;
-      border-radius:999px; cursor:pointer;
-    }
-    button.danger {
-      background:#b91c1c; color:#fff; border:none;
-      padding:6px 10px; border-radius:999px; cursor:pointer;
-    }
-
-    .stat-grid { display:flex; gap:8px; flex-wrap:wrap; }
-    .stat {
-      flex:1 1 48%; background:linear-gradient(135deg,#0f4c75,#3282b8);
-      color:#fff; padding:10px; border-radius:10px;
-    }
-    .stat strong { font-size:18px; display:block; }
-
-    table { width:100%; border-collapse:collapse; font-size:12px; }
-    th, td { padding:6px 4px; border-bottom:1px solid #e5e7eb; }
-    th { background:#f3f4f6; }
-
-    .badge { padding:2px 6px; border-radius:999px; font-size:10px; }
-    .status-Received { background:#facc15; }
-    .status-Diagnosing { background:#a855f7; color:#fff; }
-    .status-InRepair { background:#f97316; color:#fff; }
-    .status-Ready { background:#22c55e; color:#fff; }
-    .status-Delivered { background:#38bdf8; }
-
-    .status-tabs { display:flex; gap:4px; flex-wrap:wrap; }
-    .status-tab-btn {
-      padding:4px 6px; border:none; border-radius:999px;
-      background:#e5e7eb; font-size:10px; cursor:pointer;
-    }
-    .status-tab-btn.active { background:#0f4c75; color:#fff; }
-
-    .hidden { display:none; }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
 
 <header>
-  <div>
-    <h1>Abu Nawa Electronics</h1>
-    <small>Electronics & Vacuum Repair Management</small>
-  </div>
-  <div>
-    <small id="todayDate"></small>
+  <h1><span class="logo-dot"></span>Abu Nawaz Electronic</h1>
+  <small>Repair Manager • WhatsApp Alerts • Dashboard • Multi-items</small>
+
+  <div class="top-options">
+    <button class="top-btn" onclick="scrollToSection('newEntryCard')"><span class="dot"></span>New entry</button>
+    <button class="top-btn" onclick="openDashboard()"><span class="dot"></span>Dashboard</button>
+    <button class="top-btn" onclick="scrollToSection('searchCard')"><span class="dot"></span>Search</button>
+    <button class="top-btn" onclick="scrollToSection('backupCard')"><span class="dot"></span>Backup</button>
+    <button class="top-btn" onclick="scrollToSection('entriesCard')"><span class="dot"></span>All items</button>
   </div>
 </header>
 
-<div class="container">
-
-  <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('dashboard', this)">📊 Dashboard</button>
-    <button class="tab-btn" onclick="switchTab('newJob', this)">➕ New Job</button>
-    <button class="tab-btn" onclick="switchTab('jobs', this)">🛠️ Jobs</button>
-    <button class="tab-btn" onclick="switchTab('expenses', this)">💸 Expenses</button>
-    <button class="tab-btn" onclick="switchTab('settings', this)">⚙️ Settings</button>
-  </div>
-
-  <!-- DASHBOARD -->
-  <section id="dashboard" class="card">
-    <h2>Dashboard</h2>
-    <div class="stat-grid">
-      <div class="stat">
-        <span>Daily Sales</span>
-        <strong id="dailySales">AED 0</strong>
+<main>
+  <!-- ADMIN SETTINGS -->
+  <section class="card" id="adminCard">
+    <h2><span class="bar"></span>Admin settings</h2>
+    <div class="row">
+      <div class="col-4">
+        <label>Admin WhatsApp Number (e.g. 9715XXXXXXXX)</label>
+        <input type="text" id="adminWhatsapp" placeholder="9715xxxxxxxx" />
       </div>
-      <div class="stat">
-        <span>Monthly Sales</span>
-        <strong id="monthlySales">AED 0</strong>
+      <div class="col-4">
+        <label>Admin Reset PIN</label>
+        <input type="password" id="adminPin" placeholder="Set a PIN (e.g. 1234)" />
       </div>
-      <div class="stat">
-        <span>Pending Jobs</span>
-        <strong id="pendingJobs">0</strong>
-      </div>
-      <div class="stat">
-        <span>Ready to Deliver</span>
-        <strong id="readyJobs">0</strong>
+      <div class="col-4" style="display:flex; align-items:flex-end; gap:6px;">
+        <button class="btn-primary" onclick="saveAdminSettings()">Save</button>
+        <button class="btn-danger" onclick="resetAllData()">Reset</button>
+        <span id="adminSaved" class="saved-indicator" style="display:none;">
+          <span class="saved-dot"></span>Saved
+        </span>
       </div>
     </div>
   </section>
 
-  <!-- NEW JOB -->
-  <section id="newJob" class="card hidden">
-    <h2>New Repair Job</h2>
+  <!-- NEW ENTRY -->
+  <section class="card" id="newEntryCard">
+    <h2><span class="bar"></span>New repair / item entry</h2>
 
     <div class="row">
-      <div class="col-6">
-        <label>Customer Name</label>
-        <input id="custName" />
+      <div class="col-4">
+        <label>Customer name</label>
+        <input type="text" id="custName" />
       </div>
-      <div class="col-6">
-        <label>Mobile Number (971…)</label>
-        <input id="custPhone" />
+      <div class="col-4">
+        <label>Customer mobile number</label>
+        <input type="text" id="custPhone" placeholder="9715xxxxxxxx or 05xxxxxxx" />
       </div>
-
-      <div class="col-12">
-        <label>Address</label>
-        <input id="custAddress" />
-      </div>
-
-      <div class="col-6">
-        <label>Category</label>
+      <div class="col-4">
+        <label>Item category</label>
         <select id="itemCategory">
-          <option value="">Select</option>
-          <option>TV / Display</option>
-          <option>Audio / Video</option>
-          <option>CCTV</option>
-          <option>Networking</option>
-          <option>Vacuum Cleaner</option>
-          <option>Spare / Board</option>
-        </select>
-      </div>
-
-      <div class="col-6">
-        <label>Item Type</label>
-        <select id="itemType">
-          <option value="">Select</option>
-          <option>LCD TV</option>
-          <option>LED TV</option>
-          <option>Smart TV</option>
-          <option>Vacuum Cleaner</option>
-          <option>Robot Vacuum</option>
-          <option>Amplifier</option>
-          <option>Home Theater</option>
-        </select>
-      </div>
-
-      <div class="col-12">
-        <label>Brand / Model</label>
-        <input id="itemModel" />
-      </div>
-
-      <div class="col-12">
-        <label>Issue Detail</label>
-        <textarea id="issueDetail"></textarea>
-      </div>
-
-      <div class="col-4">
-        <label>Estimate (AED)</label>
-        <input type="number" id="estimate" />
-      </div>
-      <div class="col-4">
-        <label>Advance (AED)</label>
-        <input type="number" id="advance" />
-      </div>
-      <div class="col-4">
-        <label>Warranty (days)</label>
-        <input type="number" id="warrantyDays" />
-      </div>
-
-      <div class="col-12">
-        <button class="primary" onclick="saveJob()">Save Job</button>
-      </div>
-    </div>
-  </section>
-  <!-- JOBS -->
-  <section id="jobs" class="card hidden">
-    <h2>Jobs</h2>
-
-    <div class="top-actions">
-      <button class="secondary" onclick="filterJobs('all')">All</button>
-      <button class="secondary" onclick="filterJobs('Received')">Received</button>
-      <button class="secondary" onclick="filterJobs('Diagnosing')">Diagnosing</button>
-      <button class="secondary" onclick="filterJobs('In Repair')">In Repair</button>
-      <button class="secondary" onclick="filterJobs('Ready')">Ready</button>
-      <button class="secondary" onclick="filterJobs('Delivered')">Delivered</button>
-    </div>
-
-    <div style="overflow-x:auto;">
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Customer</th>
-            <th>Item</th>
-            <th>Amount</th>
-            <th>Status</th>
-            <th>Set Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="jobsTableBody"></tbody>
-      </table>
-    </div>
-  </section>
-
-  <!-- EXPENSES -->
-  <section id="expenses" class="card hidden">
-    <h2>Expenses</h2>
-
-    <div class="row">
-      <div class="col-6">
-        <label>Category</label>
-        <select id="expCategory">
-          <option>Rent</option>
-          <option>Staff Salary</option>
-          <option>Electricity</option>
-          <option>Parts</option>
-          <option>Internet</option>
+          <option value="">Select category</option>
+          <option>Accessories</option>
+          <option>Home Electronics</option>
+          <option>Small Appliances</option>
+          <option>Repairable Electronics</option>
+          <option>Computer & IT</option>
           <option>Other</option>
         </select>
       </div>
 
+      <div class="col-4">
+        <label>Item name</label>
+        <input type="text" id="itemName" placeholder="e.g. LED TV, Iron, UPS" />
+      </div>
+      <div class="col-4">
+        <label>Estimated / Final price</label>
+        <input type="number" id="itemPrice" min="0" step="0.01" />
+      </div>
+      <div class="col-4">
+        <label>Status</label>
+        <select id="itemStatus">
+          <option value="in">In repair</option>
+          <option value="ready">Ready (Item out)</option>
+          <option value="returned">Returned / Delivered</option>
+        </select>
+      </div>
+
       <div class="col-6">
-        <label>Amount (AED)</label>
-        <input type="number" id="expAmount" />
+        <label>Issue / detail</label>
+        <textarea id="itemIssue"></textarea>
+      </div>
+      <div class="col-6">
+        <label>Notes (optional)</label>
+        <textarea id="itemNotes"></textarea>
       </div>
 
-      <div class="col-12">
-        <label>Note</label>
-        <input id="expNote" />
-      </div>
-
-      <div class="col-12">
-        <button class="primary" onclick="addExpense()">Add Expense</button>
+      <div class="col-12" style="margin-top:6px; display:flex; gap:8px;">
+        <button class="btn-primary" onclick="addEntry()">Add item</button>
+        <span id="entrySaved" class="saved-indicator" style="display:none;">
+          <span class="saved-dot"></span>Saved
+        </span>
       </div>
     </div>
+  </section>
 
-    <hr />
-
+  <!-- SEARCH -->
+  <section class="card" id="searchCard">
+    <h2><span class="bar"></span>Search customer</h2>
     <div class="row">
-      <div class="col-6"><strong>Today:</strong> <span id="todayExp">AED 0</span></div>
-      <div class="col-6 right"><strong>Month:</strong> <span id="monthExp">AED 0</span></div>
+      <div class="col-4">
+        <label>Customer mobile number</label>
+        <input type="text" id="searchPhone" placeholder="Enter number..." />
+      </div>
+      <div class="col-4" style="display:flex; align-items:flex-end; gap:6px;">
+        <button class="btn-secondary" onclick="searchCustomer()">Search</button>
+        <button class="btn-secondary" onclick="clearSearch()">Clear</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- BACKUP -->
+  <section class="card" id="backupCard">
+    <h2><span class="bar"></span>Backup & Restore</h2>
+    <div class="row">
+      <div class="col-4">
+        <button class="btn-secondary" onclick="exportData()">Export JSON</button>
+      </div>
+      <div class="col-4">
+        <input type="file" id="importFile" accept=".json" />
+      </div>
+      <div class="col-4">
+        <button class="btn-secondary" onclick="importData()">Import</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ALL ENTRIES -->
+  <section class="card" id="entriesCard">
+    <h2><span class="bar"></span>All repair entries</h2>
+
+    <div class="filter-row">
+      <button class="filter-btn active" onclick="setFilter('all', this)">All</button>
+      <button class="filter-btn" onclick="setFilter('in', this)">In repair</button>
+      <button class="filter-btn" onclick="setFilter('ready', this)">Ready</button>
+      <button class="filter-btn" onclick="setFilter('returned', this)">Returned</button>
     </div>
 
-    <div style="overflow-x:auto;">
-      <table>
+    <div style="overflow-x:auto; max-height:320px; margin-top:6px;">
+      <table id="entriesTable">
         <thead>
           <tr>
+            <th>#</th>
             <th>Date</th>
-            <th>Cat</th>
-            <th>Amt</th>
-            <th>Note</th>
+            <th>Customer</th>
+            <th>Phone</th>
+            <th>Item</th>
+            <th>Category</th>
+            <th>Issue</th>
+            <th>Price</th>
+            <th>Status</th>
+            <th>Actions</th>
           </tr>
         </thead>
-        <tbody id="expTableBody"></tbody>
+        <tbody></tbody>
       </table>
     </div>
   </section>
 
-  <!-- SETTINGS -->
-  <section id="settings" class="card hidden">
-    <h2>Settings</h2>
+</main>
 
-    <label>Admin WhatsApp Number (971…)</label>
-    <input id="adminWhatsApp" />
-
-    <button class="primary" onclick="saveSettings()">Save</button>
-
-    <hr />
-
-    <button class="secondary" onclick="toggleDarkMode()">Toggle Dark Mode</button>
-
-    <hr />
-
-    <button class="secondary" onclick="exportData()">Export Data</button>
-    <input type="file" id="importFile" onchange="importData(event)" />
-
-    <button class="danger" onclick="wipeAllData()">Delete All Data</button>
-  </section>
-
+<!-- Floating Add Button -->
+<div class="fab" onclick="scrollToSection('newEntryCard')">
+  <span>+</span>
 </div>
-  <script>
-/* ---------------- STORAGE HELPERS ---------------- */
-const LS_JOBS = "jobs_v1";
-const LS_EXP = "exp_v1";
-const LS_SETTINGS = "settings_v1";
 
-function load(key, def) {
-  try { return JSON.parse(localStorage.getItem(key)) || def; }
-  catch { return def; }
-}
-function save(key, val) {
-  localStorage.setItem(key, JSON.stringify(val));
-}
+<!-- CUSTOMER PROFILE BOTTOM SHEET -->
+<div id="customerModal" class="modal">
+  <div class="modal-header">
+    <div class="modal-drag"></div>
+    <h3>Customer Profile</h3>
+  </div>
+  <div class="modal-body" id="customerModalBody"></div>
+</div>
 
-/* ---------------- TAB SWITCH ---------------- */
-function switchTab(id, btn) {
-  document.querySelectorAll("section").forEach(s => s.classList.add("hidden"));
-  document.getElementById(id).classList.remove("hidden");
-
-  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-  btn.classList.add("active");
-
-  if (id === "jobs") renderJobs();
-  if (id === "expenses") renderExpenses();
-  if (id === "dashboard") refreshDashboard();
-}
-
-/* ---------------- SAVE JOB ---------------- */
-function saveJob() {
-  let jobs = load(LS_JOBS, []);
-
-  const job = {
-    id: jobs.length ? jobs[jobs.length - 1].id + 1 : 1,
-    name: custName.value.trim(),
-    phone: custPhone.value.replace(/\D/g, ""),
-    addr: custAddress.value.trim(),
-    category: itemCategory.value,
-    type: itemType.value,
-    model: itemModel.value.trim(),
-    issue: issueDetail.value.trim(),
-    amount: Number(estimate.value || 0),
-    advance: Number(advance.value || 0),
-    warranty: Number(warrantyDays.value || 0),
-    status: "Received",
-    created: new Date().toISOString()
-  };
-
-  if (!job.name || !job.phone || !job.type) {
-    alert("Name, Phone, Item Type required");
-    return;
-  }
-
-  jobs.push(job);
-  save(LS_JOBS, jobs);
-
-  alert("Job Saved Successfully");
-}
-
-/* ---------------- RENDER JOBS ---------------- */
-function renderJobs() {
-  let jobs = load(LS_JOBS, []);
-  let tbody = document.getElementById("jobsTableBody");
-  tbody.innerHTML = "";
-
-  jobs.slice().reverse().forEach(j => {
-    let tr = document.createElement("tr");
-
-    tr.innerHTML = `
-      <td>${j.id}</td>
-      <td>${j.name}<br><small>${j.phone}</small></td>
-      <td>${j.type} (${j.model})</td>
-      <td>AED ${j.amount}</td>
-      <td><span class="badge status-${j.status.replace(" ", "")}">${j.status}</span></td>
-
-      <td>
-        <div class="status-tabs">
-          ${["Received","Diagnosing","In Repair","Ready","Delivered"]
-            .map(s => `
-              <button class="status-tab-btn ${j.status === s ? "active" : ""}"
-                onclick="setStatus(${j.id}, '${s}')">${s}</button>
-            `).join("")}
-        </div>
-      </td>
-
-      <td>
-        <button class="secondary" onclick="sendCustWA(${j.id})">Cust WA</button>
-        <button class="secondary" onclick="sendAdminWA(${j.id})">Admin WA</button>
-        <button class="secondary" onclick="printInvoice(${j.id})">Print</button>
-        <button class="danger" onclick="deleteJob(${j.id})">X</button>
-      </td>
-    `;
-
-    tbody.appendChild(tr);
-  });
-}
-
-/* ---------------- STATUS UPDATE ---------------- */
-function setStatus(id, status) {
-  let jobs = load(LS_JOBS, []);
-  let j = jobs.find(x => x.id === id);
-  j.status = status;
-  save(LS_JOBS, jobs);
-  renderJobs();
-}
-
-/* ---------------- DELETE JOB ---------------- */
-function deleteJob(id) {
-  if (!confirm("Delete this job?")) return;
-  let jobs = load(LS_JOBS, []).filter(j => j.id !== id);
-  save(LS_JOBS, jobs);
-  renderJobs();
-}
-
-/* ---------------- WHATSAPP CUSTOMER ---------------- */
-function sendCustWA(id) {
-  let j = load(LS_JOBS, []).find(x => x.id === id);
-  let msg = 
-`Abu Nawa Electronics
-Job ID: ${j.id}
-Amount: AED ${j.amount}
-Advance: AED ${j.advance}
-Balance: AED ${j.amount - j.advance}
-Status: ${j.status}`;
-
-  window.open(`https://wa.me/${j.phone}?text=${encodeURIComponent(msg)}`);
-}
-
-/* ---------------- WHATSAPP ADMIN ---------------- */
-function sendAdminWA(id) {
-  let j = load(LS_JOBS, []).find(x => x.id === id);
-  let admin = load(LS_SETTINGS, { admin: "971501912040" }).admin;
-
-  let msg = 
-`Job Update – Abu Nawa Electronics
-ID: ${j.id}
-Customer: ${j.name}
-Item: ${j.type} (${j.model})
-Status: ${j.status}`;
-
-  window.open(`https://wa.me/${admin}?text=${encodeURIComponent(msg)}`);
-}
-
-/* ---------------- PRINT INVOICE ---------------- */
-function printInvoice(id) {
-  let j = load(LS_JOBS, []).find(x => x.id === id);
-
-  let w = window.open("");
-  w.document.write(`
-    <h1>Abu Nawa Electronics – Invoice</h1>
-    <p><strong>Job ID:</strong> ${j.id}</p>
-    <p><strong>Name:</strong> ${j.name}</p>
-    <p><strong>Phone:</strong> ${j.phone}</p>
-    <p><strong>Item:</strong> ${j.type} (${j.model})</p>
-    <p><strong>Amount:</strong> AED ${j.amount}</p>
-    <p><strong>Advance:</strong> AED ${j.advance}</p>
-    <p><strong>Balance:</strong> AED ${j.amount - j.advance}</p>
-    <script>window.print()<\/script>
-  `);
-}
-
-/* ---------------- EXPENSES ---------------- */
-function addExpense() {
-  let exp = load(LS_EXP, []);
-  exp.push({
-    id: exp.length ? exp[exp.length - 1].id + 1 : 1,
-    cat: expCategory.value,
-    amt: Number(expAmount.value || 0),
-    note: expNote.value,
-    date: new Date().toISOString()
-  });
-  save(LS_EXP, exp);
-  renderExpenses();
-}
-
-function renderExpenses() {
-  let exp = load(LS_EXP, []);
-  let tbody = document.getElementById("expTableBody");
-  tbody.innerHTML = "";
-
-  exp.slice().reverse().forEach(e => {
-    let tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${e.date.slice(0,10)}</td>
-      <td>${e.cat}</td>
-      <td>AED ${e.amt}</td>
-      <td>${e.note}</td>
-    `;
-    tbody.appendChild(tr);
-  });
-
-  refreshDashboard();
-}
-
-/* ---------------- DASHBOARD ---------------- */
-function refreshDashboard() {
-  let jobs = load(LS_JOBS, []);
-  let today = new Date().toISOString().slice(0,10);
-  let month = new Date().toISOString().slice(0,7);
-
-  let daily = 0, monthly = 0, pending = 0, ready = 0;
-
-  jobs.forEach(j => {
-    if (["Received","Diagnosing","In Repair"].includes(j.status)) pending++;
-    if (j.status === "Ready") ready++;
-
-    if (j.status === "Delivered") {
-      if (j.created.slice(0,10) === today) daily += j.amount;
-      if (j.created.slice(0,7) === month) monthly += j.amount;
-    }
-  });
-
-  dailySales.textContent = "AED " + daily;
-  monthlySales.textContent = "AED " + monthly;
-  pendingJobs.textContent = pending;
-  readyJobs.textContent = ready;
-
-  let exp = load(LS_EXP, []);
-  let t = 0, m = 0;
-  exp.forEach(e => {
-    if (e.date.slice(0,10) === today) t += e.amt;
-    if (e.date.slice(0,7) === month) m += e.amt;
-  });
-
-  todayExp.textContent = "AED " + t;
-  monthExp.textContent = "AED " + m;
-}
-
-/* ---------------- SETTINGS ---------------- */
-function saveSettings() {
-  save(LS_SETTINGS, { admin: adminWhatsApp.value.replace(/\D/g,"") });
-  alert("Settings Saved");
-}
-
-function exportData() {
-  const data = {
-    jobs: load(LS_JOBS, []),
-    expenses: load(LS_EXP, []),
-    settings: load(LS_SETTINGS, {})
-  };
-  const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "abu_nawa_backup.json";
-  a.click();
-}
-
-function importData(e) {
-  const file = e.target.files[0];
-  const reader = new FileReader();
-  reader.onload = function() {
-    const data = JSON.parse(reader.result);
-    save(LS_JOBS, data.jobs || []);
-    save(LS_EXP, data.expenses || []);
-    save(LS_SETTINGS, data.settings || {});
-    alert("Data Imported");
-  };
-  reader.readAsText(file);
-}
-
-function wipeAllData() {
-  if (!confirm("Delete ALL data?")) return;
-  localStorage.removeItem(LS_JOBS);
-  localStorage.removeItem(LS_EXP);
-  localStorage.removeItem(LS_SETTINGS);
-  alert("All Data Deleted");
-}
-
-/* ---------------- INIT ---------------- */
-document.getElementById("todayDate").textContent = new Date().toISOString().slice(0,10);
-refreshDashboard();
-</script>
+<script src="app.js"></script>
+<script src="modal.js"></script>
 
 </body>
 </html>
-
